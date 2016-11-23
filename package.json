@@ -1,0 +1,24 @@
+{
+  "name": "define-your-way",
+  "version": "1.0.0",
+  "description": "A Dictionary Game - invent convincing, creative definitions for words.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/petermalcolm/define-your-way.git"
+  },
+  "keywords": [
+    "dictionary",
+    "game",
+    "words"
+  ],
+  "author": "Peter T Malcolm",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/petermalcolm/define-your-way/issues"
+  },
+  "homepage": "https://github.com/petermalcolm/define-your-way#readme"
+}
