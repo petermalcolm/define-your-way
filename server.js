@@ -1,0 +1,1 @@
+var RSVP = require('rsvp');

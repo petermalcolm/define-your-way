@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/petermalcolm/define-your-way/issues"
   },
-  "homepage": "https://github.com/petermalcolm/define-your-way#readme"
+  "homepage": "https://github.com/petermalcolm/define-your-way#readme",
+  "dependencies": {
+    "rsvp": "^3.3.3"
+  }
 }
