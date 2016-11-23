@@ -35,3 +35,6 @@ jspm_packages
 
 # Optional REPL history
 .node_repl_history
+
+# HTML5 boilerplate zip (for starting over)
+initializr-verekia-4.0.zip

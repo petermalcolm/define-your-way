@@ -22,6 +22,8 @@
   },
   "homepage": "https://github.com/petermalcolm/define-your-way#readme",
   "dependencies": {
+    "ecstatic": "^2.1.0",
+    "http-server": "^0.9.0",
     "rsvp": "^3.3.3"
   }
 }
