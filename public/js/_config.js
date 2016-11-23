@@ -1,0 +1,1 @@
+var SERVER = 'localhost:5000';
