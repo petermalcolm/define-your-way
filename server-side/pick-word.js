@@ -1,5 +1,5 @@
-// promises using RSVP
-var RSVP = require('rsvp');
+// better, curl-like promises using axios
+var axios = require('axios');
 
 var Picker = function(demo) {
 	// this.demo = demo;
@@ -15,6 +15,10 @@ var Picker = function(demo) {
 	// extract the definition
 	// ... or, if there is no definition, choose the first alternative, look that up
 	// Display the definition of the word to the user
+
+	this.getWord = function() {
+		console.log('What is axios?',axios);
+	}
 
 };
 
