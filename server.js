@@ -20,9 +20,7 @@ server.listen(5000);
 router.addRoute('/word', function (req, res, m) {
 	this.res = res;
 	var that = this;
-	// console.log('that res is',that.res);
 	var p = new pick();
-	// var word = p.getWord();
 	p.getWord(function(err,word){
 		if(null===err){
 			console.log('callback, successfully gotWord()');
