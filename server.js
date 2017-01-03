@@ -1,11 +1,13 @@
 //// INCLUDES ////
 // static file server using ecstatic
-var http = require('http')
-var ecstatic = require('ecstatic')
-var st = ecstatic(__dirname + '/public')
+var http = require('http');
+var ecstatic = require('ecstatic');
+var st = ecstatic(__dirname + '/public');
 // and simple little endpoint using routes
-var Router = require('routes')
-var router = Router()
+var Router = require('routes');
+var router = Router();
+// my includes
+var pick = require('./server-side/pick-word.js');
 
 //// STATIC FILES on 5000 ////
 var server = http.createServer(function (req, res) {
@@ -15,14 +17,23 @@ server.listen(5000);
 
 //// API on 5411 ////
 // define endpoints 
-router.addRoute('/hello', function (req, res, m) {
-	res.end('oh hello\n');
+router.addRoute('/word', function (req, res, m) {
+	this.res = res;
+	var that = this;
+	// console.log('that res is',that.res);
+	var p = new pick();
+	// var word = p.getWord();
+	p.getWord(function(err,word){
+		if(null===err){
+			console.log('callback, successfully gotWord()');
+			that.res.end(word+'\n');
+		} else {
+			console.log('callback, failed at gotWord()', err);
+			that.res.end('... error\n');
+		}
+	});
 });
 
-// API calls to pick words and get definitions:
-var pick = require('./server-side/pick-word.js');
-var p = new pick('wow!');
-p.getWord();
 
 var apiserv = http.createServer(function (req, res) {
 	// endpoints
