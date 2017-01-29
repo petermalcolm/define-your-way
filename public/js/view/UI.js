@@ -4,7 +4,35 @@ var ReactDOM = require('../../../node_modules/react-dom');
 const RcE = React.createElement;
 const dgetID = document.getElementById.bind( document );
 
+const DefineGrid = React.createClass({
+	getInitialState: function() {
+		return null;
+	},
+	addCell: function() {
+
+	},
+	render: function() {	
+		return RcE('div',{ className: 'defyw-grid'} /* no child-el's for now... */);
+	}
+});
+
 ReactDOM.render(
-  RcE('div', null, 'Hello World, indeed! This is really React'),
-  dgetID('root')
+	RcE('div', { id: 'defyw' }, 
+		RcE('h3', { id: 'defyw-title' }, 'Define Your Way'),
+		RcE('div', { id: 'defyw-intro'}, 'Introductory info here ... ' ),
+		RcE(DefineGrid, {} )
+	),
+	dgetID('root')
 );    
+
+/////////////////////
+// class Hello extends React.Component {
+//   render() {
+//     return React.createElement('div', null, `Hello ${this.props.toWhat}`);
+//   }
+// }
+
+// ReactDOM.render(
+//   RcE(Hello, {toWhat: 'World'}, null),
+//   dgetID('hello')
+// );
