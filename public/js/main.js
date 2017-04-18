@@ -20289,6 +20289,9 @@ const RcE = React.createElement;
 const dgetID = document.getElementById.bind( document );
 
 const DefineGrid = React.createClass({
+	propTypes: {
+		
+	},
 	getInitialState: function() {
 		return null;
 	},
@@ -20296,15 +20299,25 @@ const DefineGrid = React.createClass({
 
 	},
 	render: function() {	
-		return RcE('div',{ className: 'defyw-grid'} /* no child-el's for now... */);
+		return RcE('div',{ className: 'defyw-grid'} , 'grid' /* no real child-el's for now... */);
 	}
+});
+
+const DefineWord = React.createClass({
+	getInitialState: function() {
+		return null;
+	},
+	render: function() {	
+		return RcE('div',{ className: 'defyw-grid'} /* no child-el's for now... */);
+	}	
 });
 
 ReactDOM.render(
 	RcE('div', { id: 'defyw' }, 
 		RcE('h3', { id: 'defyw-title' }, 'Define Your Way'),
 		RcE('div', { id: 'defyw-intro'}, 'Introductory info here ... ' ),
-		RcE(DefineGrid, {} )
+		RcE(DefineGrid, {} ),
+		RcE('p', { id: 'defyw-word' }, 'WORD' )
 	),
 	dgetID('root')
 );    
