@@ -24,7 +24,11 @@ router.addRoute('/word', function (req, res, m) {
 	p.getWord(function(err,word){
 		if(null===err){
 			console.log('callback, successfully gotWord()');
-			that.res.end(word+'\n');
+			that.res.setHeader("Access-Control-Allow-Origin", "http://localhost:5000");
+		    that.res.setHeader("Access-Control-Allow-Credentials", "true");
+		    that.res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+		    that.res.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
+    		that.res.end(word+'\n');
 		} else {
 			console.log('callback, failed at gotWord()', err);
 			that.res.end('... error\n');
