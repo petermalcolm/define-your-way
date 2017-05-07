@@ -8,6 +8,7 @@ var Router = require('routes');
 var router = Router();
 // my includes
 var pick = require('./server-side/pick-word.js');
+var definition = require('./server-side/define-word.js');
 
 //// STATIC FILES on 5000 ////
 var server = http.createServer(function (req, res) {
@@ -16,7 +17,7 @@ var server = http.createServer(function (req, res) {
 server.listen(5000);
 
 //// API on 5411 ////
-// define endpoints 
+// define endpoint: /word
 router.addRoute('/word', function (req, res, m) {
 	this.res = res;
 	var that = this;
@@ -24,10 +25,7 @@ router.addRoute('/word', function (req, res, m) {
 	p.getWord(function(err,word){
 		if(null===err){
 			console.log('callback, successfully gotWord()');
-			that.res.setHeader("Access-Control-Allow-Origin", "http://localhost:5000");
-		    that.res.setHeader("Access-Control-Allow-Credentials", "true");
-		    that.res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
-		    that.res.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
+			that.res = corsHeaders( that.res );
     		that.res.end(word+'\n');
 		} else {
 			console.log('callback, failed at gotWord()', err);
@@ -36,6 +34,32 @@ router.addRoute('/word', function (req, res, m) {
 	});
 });
 
+// define endpoint: /definition
+router.addRoute('/define/:word?', function (req, res, m) {
+	this.res = res;
+	var that = this;
+	console.log('inside definition, m.word is: '+JSON.stringify(m.params));
+	this.word = m.params.word ? m.params.word : '';
+	var d = new definition( this.word );
+	d.getDefinition(function(err,defined){
+		if(null===err){
+			console.log('callback, success at getDefinition()');
+			that.res = corsHeaders( that.res );
+			that.res.end(defined+'\n');
+		} else {
+			console.log('callback, failed at getDefinition()', err)
+		}
+	});
+});
+
+// helper: CORS-friendly headers
+var corsHeaders = function(res) {
+	res.setHeader("Access-Control-Allow-Origin", "http://localhost:5000");
+	res.setHeader("Access-Control-Allow-Credentials", "true");
+	res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+	res.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
+	return res;
+};
 
 var apiserv = http.createServer(function (req, res) {
 	// endpoints

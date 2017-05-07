@@ -1,6 +1,5 @@
 // curl-like promises using axios
 var axios = require('axios');
-// except axios dies mysteriously ...
 
 // trying request-promise
 var rp = require('request-promise');
