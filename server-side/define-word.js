@@ -26,7 +26,6 @@ var Definition = function(db, word = '') {
 				that.getDefinitionByApi();
 			} else {
 				console.log('found definition in local db: ',data);
-				data = data.slice(that.dbPrefix.length);
 				that.callback(null,data);
 			}
 		});

@@ -44,7 +44,7 @@ router.addRoute('/define/:word?', function (req, res, m) {
 	console.log('inside definition, m.word is: '+JSON.stringify(m.params));
 	this.word = m.params.word ? m.params.word : '';
 	var d = new definition( db, this.word );
-	d.getDefinition( db, function(err,defined){
+	d.getDefinition( function(err,defined){
 		if(null===err){
 			console.log('callback, success at getDefinition()');
 			that.res = corsHeaders( that.res );
