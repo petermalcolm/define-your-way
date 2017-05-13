@@ -38,3 +38,6 @@ jspm_packages
 
 # HTML5 boilerplate zip (for starting over)
 initializr-verekia-4.0.zip
+
+# The database
+define-db/

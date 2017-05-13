@@ -3,6 +3,9 @@
 var http = require('http');
 var ecstatic = require('ecstatic');
 var st = ecstatic(__dirname + '/public');
+// and a db to cache some API responses
+var levelup = require('level');
+var db = levelup('./define-db')
 // and simple little endpoint using routes
 var Router = require('routes');
 var router = Router();
@@ -40,8 +43,8 @@ router.addRoute('/define/:word?', function (req, res, m) {
 	var that = this;
 	console.log('inside definition, m.word is: '+JSON.stringify(m.params));
 	this.word = m.params.word ? m.params.word : '';
-	var d = new definition( this.word );
-	d.getDefinition(function(err,defined){
+	var d = new definition( db, this.word );
+	d.getDefinition( db, function(err,defined){
 		if(null===err){
 			console.log('callback, success at getDefinition()');
 			that.res = corsHeaders( that.res );
