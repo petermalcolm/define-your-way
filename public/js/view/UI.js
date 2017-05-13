@@ -40,8 +40,16 @@ const DefineDefinition = React.createClass({
 			url: 'http://localhost:5411/define/'+this.props.word, // TODO: make this config!
 			method: 'GET'
 		}, function gotWord(err, res, body) {
-			this.setState({ definition: body });
+			this.setState({ definition: this.parseResponse(body) });
 		}.bind(this));
+	},
+	parseResponse: function(responseString) {
+		var parser = new DOMParser();
+		var xmlDoc = parser.parseFromString(responseString,"text/xml");
+		var suggestions = xmlDoc.getElementsByTagName("suggestion");
+		if( suggestions.length ){
+			return 'Did you mean ' + suggestions[0].innerHTML + '?';
+		}
 	},
 	render: function() {
 		return RcE('p',{ className: 'defyw-def', key: 'defyw-def'},
