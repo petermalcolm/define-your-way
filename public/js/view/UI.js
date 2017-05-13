@@ -29,7 +29,7 @@ const DefineDefinition = React.createClass({
 		return { word: '' }
 	},
 	getInitialState: function() {
-		return { definition: '.....' }
+		return { definition: '.....', suggestions : [] }
 	},
 	componentWillUpdate: function(){
 		this.definitionSource(this.props);
@@ -47,14 +47,33 @@ const DefineDefinition = React.createClass({
 		var parser = new DOMParser();
 		var xmlDoc = parser.parseFromString(responseString,"text/xml");
 		var suggestions = xmlDoc.getElementsByTagName("suggestion");
+		var xmlDef = xmlDoc.getElementsByTagName("def");
 		if( suggestions.length ){
+			var newSuggestions = [];
+			for (var suggestion of suggestions) {
+				newSuggestions.push(suggestion);
+			}
+			this.setState({ suggestions: newSuggestions });
 			return 'Did you mean ' + suggestions[0].innerHTML + '?';
+		} else if( xmlDef.length ) {
+			this.setState({ definition: xmlDef.innerHTML });
 		}
 	},
 	render: function() {
-		return RcE('p',{ className: 'defyw-def', key: 'defyw-def'},
+		return RcE('p',{ className: 'defyw-def', 
+						 key: 'defyw-def', 
+						 children: React.createElement(DefineSuggestions, 
+						 	{className: 'defyw-def-suggestions',
+						 	 key: 'defyw-def-suggestions',
+						 	 suggestions: this.state.suggestions})},
 			`${this.state.definition}`
 		);
+	}
+});
+
+const DefineSuggestions = React.createClass({
+	render: function() {
+		return 'Or: ' + this.props.suggestions.join(', ');
 	}
 });
 
@@ -83,6 +102,7 @@ const DefineWord = React.createClass({
 			[
 				RcE('p',{ className: 'defyw-word', key: 'defyw-word' }, `WORD: ${this.state.word}`),
 				RcE(DefineDefinition, { className: 'defyw-def-wrapper',
+										key: 'defyw-def-wrapper',
 										word: this.state.word } )
 			]
 		);
