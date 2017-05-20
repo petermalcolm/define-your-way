@@ -29036,6 +29036,7 @@ const RcE = React.createElement;
 const dgetID = document.getElementById.bind( document );
 
 const DefineGrid = React.createClass({
+	displayName: 'DefineGrid',
 	propTypes: {
 		
 	},
@@ -29055,13 +29056,18 @@ const DefineGrid = React.createClass({
  * Stateless Component — Only props, no state. There's not much going on besides the render() function and all their logic revolves around the props they receive.
  */
 const DefineDefinition = React.createClass({
+	displayName: 'DefineDefinition',
 	getDefaultProps: function() {
 		return { word: '' }
 	},
 	getInitialState: function() {
 		return { definition: '.....', suggestions : [] }
 	},
-	componentWillUpdate: function(){
+	shouldComponentUpdate(nextProps, nextState){
+		return 	this.props.word !== nextProps.word || 
+				this.state.definition !== nextState.definition;
+	},
+	componentWillUpdate: function(nextProps, nextState){
 		this.definitionSource(this.props);
 	},
 	definitionSource: function(props){
@@ -29081,7 +29087,7 @@ const DefineDefinition = React.createClass({
 		if( suggestions.length ){
 			var newSuggestions = [];
 			for (var suggestion of suggestions) {
-				newSuggestions.push(suggestion);
+				newSuggestions.push(suggestion.innerHTML);
 			}
 			this.setState({ suggestions: newSuggestions });
 			return 'Did you mean ' + suggestions[0].innerHTML + '?';
@@ -29091,23 +29097,28 @@ const DefineDefinition = React.createClass({
 	},
 	render: function() {
 		return RcE('p',{ className: 'defyw-def', 
-						 key: 'defyw-def', 
-						 children: React.createElement(DefineSuggestions, 
-						 	{className: 'defyw-def-suggestions',
-						 	 key: 'defyw-def-suggestions',
-						 	 suggestions: this.state.suggestions})},
-			`${this.state.definition}`
+						 key: 'defyw-def' },
+			// `${this.state.definition}`,
+			RcE(DefineSuggestions, 
+				 	{className: 'defyw-def-suggestions',
+				 	 key: 'defyw-def-suggestions',
+				 	 suggestions: this.state.suggestions})
 		);
 	}
 });
 
 const DefineSuggestions = React.createClass({
+	displayName: 'DefineSuggestions',
+	getInitialProps: function() {
+		suggestions: []
+	},
 	render: function() {
-		return 'Or: ' + this.props.suggestions.join(', ');
+		return RcE('span',null,'Or: ' + this.props.suggestions.join(', '));
 	}
 });
 
 const DefineWord = React.createClass({
+	displayName: 'DefineWord',
 	getInitialState: function() {
 		return { word: '...',
 				};
