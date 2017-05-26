@@ -29096,7 +29096,7 @@ const DefineDefinition = React.createClass({
 		}
 	},
 	render: function() {
-		return RcE('p',{ className: 'defyw-def', 
+		return RcE('div',{ className: 'defyw-def', 
 						 key: 'defyw-def' },
 			// `${this.state.definition}`,
 			RcE(DefineSuggestions, 
@@ -29113,7 +29113,9 @@ const DefineSuggestions = React.createClass({
 		suggestions: []
 	},
 	render: function() {
-		return RcE('span',null,'Or: ' + this.props.suggestions.join(', '));
+		return RcE('ul', null, this.props.suggestions.map(function(val){
+			return RcE('li',null,val) ;
+		}));
 	}
 });
 
