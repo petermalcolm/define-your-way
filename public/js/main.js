@@ -39804,7 +39804,10 @@ const DefineGrid = React.createClass({
 const DefineDefinition = React.createClass({
 	displayName: 'DefineDefinition',
 	getDefaultProps: function() {
-		return { word: '' }
+		return { 
+			word: '', 
+			userChoosesWord: undefined // passed in from DefineWord
+		}
 	},
 	getInitialState: function() {
 		return { definition: { friendly: 'Looking it up' }, suggestions : [] }
@@ -39836,21 +39839,37 @@ const DefineDefinition = React.createClass({
 				newSuggestions.push(suggestion.innerHTML);
 			}
 			this.setState({ suggestions: newSuggestions });
-			return 'Did you mean ' + suggestions[0].innerHTML + '?';
+			return {
+				partOfSpeech: '',
+				pronunciation: '',
+				date: '',
+				variations: [],
+				friendly: '^^^ Here are some alternatives. Please choose one.'
+			};
 		} else if( xmlDef ) {
 			var variations = xmlDef.getElementsByTagName('dt')
 			var newVariations = [];
 			for (var variation of variations) {
 				newVariations.push(variation.innerHTML);
 			}
+			var date = '';
+			if( xmlDef.getElementsByTagName("date").length ) {
+				date = xmlDef.getElementsByTagName("date")[0].innerHTML;
+			}
+			this.setState({ suggestions: [] });			
 			return {
 				partOfSpeech: xmlDoc.getElementsByTagName("fl")[0].innerHTML,
 				pronunciation: xmlDoc.getElementsByTagName("pr")[0].innerHTML,
-				date: xmlDef.getElementsByTagName("date")[0].innerHTML,
-				variations: newVariations
+				date: date,
+				variations: newVariations,
+				friendly: ''
 			};
 		} else {
 			return {
+				partOfSpeech: '',
+				pronunciation: '',
+				date: '',
+				variations: [],
 				friendly: 'I got nuthin'
 			};
 		}
@@ -39859,7 +39878,8 @@ const DefineDefinition = React.createClass({
 		return RcE('div',{ className: 'defyw-def', 
 						 key: 'defyw-def' },
 			RcE(DefineSuggestions, 
-				 	{suggestions: this.state.suggestions}),
+				 	{suggestions: this.state.suggestions,
+				 	 userChoosesWord: this.props.userChoosesWord }),
 			RcE('div',
 					{className: 'defyw-def-details',
 					 key: 'defyw-def-details'},
@@ -39880,12 +39900,16 @@ const DefineDefinition = React.createClass({
 const DefineSuggestions = React.createClass({
 	displayName: 'DefineSuggestions',
 	getInitialProps: function() {
-		suggestions: []
+		return {
+			suggestions: [],
+			userChoosesWord: undefined
+		};
 	},
 	render: function() {
 		return RcE('ul', 
 				{className: 'defyw-def-suggestions',
-				 key: 'defyw-def-suggestions',}, 
+				 key: 'defyw-def-suggestions',
+				 onClick: this.props.userChoosesWord }, 
 				 this.props.suggestions.map(function(val){
 					return RcE('li',null,val) ;
 				 })
@@ -39902,7 +39926,7 @@ const DefineWord = React.createClass({
 	},
 	getInitialProps: function() {
 		return {
-			userChoosesWord : this.userChoosesWord.bind(this)
+			// userChoosesWord : this.userChoosesWord.bind(this)
 		};
 	},
 	componentWillMount: function(){
@@ -39918,7 +39942,8 @@ const DefineWord = React.createClass({
 		}.bind(this));
 	},
 	userChoosesWord: function(e) {
-		return 'placeholder'; // TODO: pass to child, respond to click on suggestion
+		console.log( e.target.innerHTML );
+		this.setState({word: e.target.innerHTML});
 	},
 	componentDidUpdate: function(prevProps,prevState) {
 
@@ -39929,7 +39954,8 @@ const DefineWord = React.createClass({
 				RcE('p',{ className: 'defyw-word', key: 'defyw-word' }, `WORD: ${this.state.word}`),
 				RcE(DefineDefinition, { className: 'defyw-def-wrapper',
 										key: 'defyw-def-wrapper',
-										word: this.state.word } )
+										word: this.state.word,
+										userChoosesWord: this.userChoosesWord } )
 			]
 		);
 	}	
