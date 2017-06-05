@@ -37,9 +37,9 @@ const DefineDefinition = React.createClass({
 	getInitialState: function() {
 		return { definition: { friendly: 'Looking it up' }, suggestions : [] }
 	},
-	shouldComponentUpdate(nextProps, nextState){
+	shouldComponentUpdate(nextProps, nextState) {
 		return 	this.props.word !== nextProps.word || 
-				this.state.definition !== nextState.definition;
+				JSON.stringify(this.state.definition) !== JSON.stringify(nextState.definition);
 	},
 	componentWillUpdate: function(nextProps, nextState){
 		this.definitionSource(this.props);
@@ -170,6 +170,9 @@ const DefineWord = React.createClass({
 		console.log( e.target.innerHTML );
 		this.setState({word: e.target.innerHTML});
 	},
+	shouldComponentUpdate(nextProps, nextState){
+		return 	this.state.word !== nextState.word;
+	},
 	componentDidUpdate: function(prevProps,prevState) {
 
 	},
@@ -180,7 +183,11 @@ const DefineWord = React.createClass({
 				RcE(DefineDefinition, { className: 'defyw-def-wrapper',
 										key: 'defyw-def-wrapper',
 										word: this.state.word,
-										userChoosesWord: this.userChoosesWord } )
+										userChoosesWord: this.userChoosesWord } ),
+				RcE('button',{ className:'defyw-new-word-btn',
+							   key: 'defyw-new-word-btn',
+							   onClick: this.wordSource }, 
+							   'pick a different word' )
 			]
 		);
 	}	
