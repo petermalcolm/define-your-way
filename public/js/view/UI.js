@@ -42,12 +42,11 @@ const DefineDefinition = React.createClass({
 				JSON.stringify(this.state.definition) !== JSON.stringify(nextState.definition);
 	},
 	componentWillUpdate: function(nextProps, nextState){
-		this.definitionSource(this.props);
+		this.definitionSource(nextProps);
 	},
-	definitionSource: function(props){
-		props = props || this.props;
+	definitionSource: function(nextProps){
 		request({
-			url: 'http://localhost:5411/define/'+this.props.word, // TODO: make this config!
+			url: 'http://localhost:5411/define/'+nextProps.word, // TODO: make this config!
 			method: 'GET'
 		}, function gotWord(err, res, body) {
 			this.setState({ definition: this.parseResponse(body) });
