@@ -1,5 +1,5 @@
-var React = require('../../../node_modules/react');
-var ReactDOM = require('../../../node_modules/react-dom');
+var React = require('react');
+var ReactDOM = require('react-dom');
 var request = require('ajax-request');
 var R = require('ramda');
 
@@ -76,15 +76,11 @@ const DefineDefinition = React.createClass({
 			for (var variation of variations) {
 				newVariations.push(variation.innerHTML);
 			}
-			var date = '';
-			if( xmlDef.getElementsByTagName("date").length ) {
-				date = xmlDef.getElementsByTagName("date")[0].innerHTML;
-			}
 			this.setState({ suggestions: [] });			
 			return {
-				partOfSpeech: xmlDoc.getElementsByTagName("fl")[0].innerHTML,
-				pronunciation: xmlDoc.getElementsByTagName("pr")[0].innerHTML,
-				date: date,
+				partOfSpeech: xinner0(xmlDoc,'fl'),
+				pronunciation: xinner0(xmlDoc,'pr'),
+				date: xinner0(xmlDoc,'date'),
 				variations: newVariations,
 				friendly: ''
 			};
@@ -112,7 +108,7 @@ const DefineDefinition = React.createClass({
 					 RcE('p',null,R.pathOr('',['state','definition','date'],this)),
 					 RcE('ol',null,
 						 R.pathOr([],['state','definition','variations'],this).map(function(val){
-						 	return RcE('li',null,val);
+						 	return RcE('li',{key:val.hashCode()},val.spanify());
 						 })
 					 )
 			),
@@ -135,7 +131,7 @@ const DefineSuggestions = React.createClass({
 				 key: 'defyw-def-suggestions',
 				 onClick: this.props.userChoosesWord }, 
 				 this.props.suggestions.map(function(val){
-					return RcE('li',null,val) ;
+					return RcE('li',{key:val},val) ;
 				 })
 		);
 	}
@@ -203,14 +199,32 @@ ReactDOM.render(
 	dgetID('root')
 );    
 
-/////////////////////
-// class Hello extends React.Component {
-//   render() {
-//     return React.createElement('div', null, `Hello ${this.props.toWhat}`);
-//   }
-// }
+////////////// HELPERS /////////////////
+const xinner0 = function (xmlDoc,tagName) {
+	if( xmlDoc.getElementsByTagName(tagName).length ) {
+		return xmlDoc.getElementsByTagName(tagName)[0].innerHTML;
+	} else {
+		return '';
+	}
+}
 
-// ReactDOM.render(
-//   RcE(Hello, {toWhat: 'World'}, null),
-//   dgetID('hello')
-// );
+String.prototype.hashCode = function(){
+	var hash = 0;
+	if (this.length == 0) return hash;
+	for (var i = 0; i < this.length; i++) {
+		char = this.charCodeAt(i);
+		hash = ((hash<<5)-hash)+char;
+	}
+	return hash.toString(16);
+}
+
+String.prototype.spanify = function(){ // TODO: something not vulnerable to XSS
+	return this.replace(/<(?=[^\/])/ig,"<span class='")
+				.replaceAll(">","'>")
+				.replace(/<\/([^>]+>)/ig,"</span>");
+}
+
+String.prototype.replaceAll = function(search, replacement) {
+    var target = this;
+    return target.split(search).join(replacement);
+};
