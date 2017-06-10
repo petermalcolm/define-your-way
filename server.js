@@ -2,26 +2,41 @@
 // static file server using ecstatic
 var http = require('http');
 var ecstatic = require('ecstatic');
-var st = ecstatic(__dirname + '/public');
+// var st = ecstatic(__dirname + '/public');
+var st = ecstatic({ root: __dirname + '/public', handleError: false })
+
 // and a db to cache some API responses
 var levelup = require('level');
 var db = levelup('./define-db')
 // and simple little endpoint using routes
 var Router = require('routes');
-var router = Router();
+var staticRouter = Router();
+var apiRouter = Router();
 // my includes
 var pick = require('./server-side/pick-word.js');
 var definition = require('./server-side/define-word.js');
 
 //// STATIC FILES on 5000 ////
+// define endpoint: /game/:id
+staticRouter.addRoute('/game/:id', function(req, res, m) {
+	// st(req, res); // static files
+	st('/', res); // static files
+});
+// root level:
 var server = http.createServer(function (req, res) {
-	st(req, res); // static files
+//	st(req, res); // static files
+	var m = staticRouter.match(req.url)
+		if (m) m.fn(req, res, m)
+		else {
+			res.statusCode = 404
+			res.end('not found\n')
+		}
 });
 server.listen(5000);
 
 //// API on 5411 ////
 // define endpoint: /word
-router.addRoute('/word', function (req, res, m) {
+apiRouter.addRoute('/word', function (req, res, m) {
 	this.res = res;
 	var that = this;
 	var p = new pick();
@@ -38,7 +53,7 @@ router.addRoute('/word', function (req, res, m) {
 });
 
 // define endpoint: /definition
-router.addRoute('/define/:word?', function (req, res, m) {
+apiRouter.addRoute('/define/:word?', function (req, res, m) {
 	this.res = res;
 	var that = this;
 	console.log('inside definition, m.word is: '+JSON.stringify(m.params));
@@ -66,7 +81,7 @@ var corsHeaders = function(res) {
 
 var apiserv = http.createServer(function (req, res) {
 	// endpoints
-	var m = router.match(req.url)
+	var m = apiRouter.match(req.url)
 		if (m) m.fn(req, res, m)
 		else {
 			res.statusCode = 404
