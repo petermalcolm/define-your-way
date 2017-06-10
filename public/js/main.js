@@ -40000,6 +40000,7 @@ module.exports = DefineWord;
 },{"./DefineDefinition":544,"ajax-request":41,"react":542,"react-dom":362}],547:[function(require,module,exports){
 const React = require('react');
 const ReactDOM = require('react-dom');
+const YourGame = require('./YourGame');
 const YourGrid = require('./YourGrid');
 const DefineWord = require('./DefineWord');
 
@@ -40010,18 +40011,36 @@ ReactDOM.render(
 	RcE('div', { id: 'defyw' }, 
 		RcE('h3', { id: 'defyw-title' }, 'Define Your Way'),
 		RcE('div', { id: 'defyw-intro'}, 'Introductory info here ... ' ),
+		RcE(YourGame, {} ),
 		RcE(YourGrid, {} ),
 		RcE(DefineWord, {} ) 
 	),
 	dgetID('root')
 );
-},{"./DefineWord":546,"./YourGrid":548,"react":542,"react-dom":362}],548:[function(require,module,exports){
+},{"./DefineWord":546,"./YourGame":548,"./YourGrid":549,"react":542,"react-dom":362}],548:[function(require,module,exports){
+const React = require('react');
+const ReactDOM = require('react-dom');
+const RcE = React.createElement;
+
+const YourGame = React.createClass({
+	displayName: 'YourGame',
+	render: function() {
+		if(location.href.match(/game/)){
+			return RcE('div',{ className: 'defyw-game', key: 'defyw-game'} , 'in a game' );
+		} else {
+			return RcE('div',{ className: 'defyw-game', key: 'defyw-game'} , 'not in a game' );
+		}
+	}
+});
+
+module.exports = YourGame;
+},{"react":542,"react-dom":362}],549:[function(require,module,exports){
 const React = require('react');
 const ReactDOM = require('react-dom');
 const RcE = React.createElement;
 
 const YourGrid = React.createClass({
-	displayName: 'DefineGrid',
+	displayName: 'YourGrid',
 	propTypes: {
 		
 	},

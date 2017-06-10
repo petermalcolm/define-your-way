@@ -3,7 +3,7 @@ const ReactDOM = require('react-dom');
 const RcE = React.createElement;
 
 const YourGrid = React.createClass({
-	displayName: 'DefineGrid',
+	displayName: 'YourGrid',
 	propTypes: {
 		
 	},
