@@ -39773,29 +39773,12 @@ if (isWindows) {
 }
 }).call(this,require('_process'))
 },{"_process":15,"util":39}],544:[function(require,module,exports){
-var React = require('react');
-var ReactDOM = require('react-dom');
-var request = require('ajax-request');
-var R = require('ramda');
-
+const React = require('react');
+const ReactDOM = require('react-dom');
+const request = require('ajax-request');
+const R = require('ramda');
+const DefineSuggestions = require('./DefineSuggestions');
 const RcE = React.createElement;
-const dgetID = document.getElementById.bind( document );
-
-const DefineGrid = React.createClass({
-	displayName: 'DefineGrid',
-	propTypes: {
-		
-	},
-	getInitialState: function() {
-		return null;
-	},
-	addCell: function() {
-
-	},
-	render: function() {	
-		return RcE('div',{ className: 'defyw-grid', key: 'defyw-grid'} , 'grid' /* no real child-el's for now... */);
-	}
-});
 
 /** DefineDefinition
  * NOT A
@@ -39892,6 +39875,46 @@ const DefineDefinition = React.createClass({
 	}
 });
 
+////////////// HELPERS /////////////////
+const xinner0 = function (xmlDoc,tagName) {
+	if( xmlDoc.getElementsByTagName(tagName).length ) {
+		return xmlDoc.getElementsByTagName(tagName)[0].innerHTML;
+	} else {
+		return '';
+	}
+}
+
+String.prototype.hashCode = function(){
+	var hash = 0;
+	if (this.length == 0) return hash;
+	for (var i = 0; i < this.length; i++) {
+		char = this.charCodeAt(i);
+		hash = ((hash<<5)-hash)+char;
+	}
+	return hash.toString(16);
+}
+
+String.prototype.spanify = function(){ // TODO: something not vulnerable to XSS
+	return this.replace(/<(?=[^\/])/ig,"<span class='")
+				.replaceAll(">","'>")
+				.replace(/<\/([^>]+>)/ig,"</span>");
+}
+
+String.prototype.stripXML = function(){
+	return this.replace(/<[^>]+>/ig,'');
+}
+
+String.prototype.replaceAll = function(search, replacement) {
+    var target = this;
+    return target.split(search).join(replacement);
+};
+
+module.exports = DefineDefinition;
+},{"./DefineSuggestions":545,"ajax-request":41,"ramda":44,"react":542,"react-dom":362}],545:[function(require,module,exports){
+const React = require('react');
+const ReactDOM = require('react-dom');
+const RcE = React.createElement;
+
 const DefineSuggestions = React.createClass({
 	displayName: 'DefineSuggestions',
 	getInitialProps: function() {
@@ -39911,6 +39934,15 @@ const DefineSuggestions = React.createClass({
 		);
 	}
 });
+
+module.exports = DefineSuggestions;
+},{"react":542,"react-dom":362}],546:[function(require,module,exports){
+const React = require('react');
+const ReactDOM = require('react-dom');
+const request = require('ajax-request');
+const DefineDefinition = require('./DefineDefinition');
+const RcE = React.createElement;
+
 
 const DefineWord = React.createClass({
 	displayName: 'DefineWord',
@@ -39963,48 +39995,46 @@ const DefineWord = React.createClass({
 	}	
 });
 
+module.exports = DefineWord;
+
+},{"./DefineDefinition":544,"ajax-request":41,"react":542,"react-dom":362}],547:[function(require,module,exports){
+const React = require('react');
+const ReactDOM = require('react-dom');
+const YourGrid = require('./YourGrid');
+const DefineWord = require('./DefineWord');
+
+const RcE = React.createElement;
+const dgetID = document.getElementById.bind( document );
 
 ReactDOM.render(
 	RcE('div', { id: 'defyw' }, 
 		RcE('h3', { id: 'defyw-title' }, 'Define Your Way'),
 		RcE('div', { id: 'defyw-intro'}, 'Introductory info here ... ' ),
-		RcE(DefineGrid, {} ),
+		RcE(YourGrid, {} ),
 		RcE(DefineWord, {} ) 
 	),
 	dgetID('root')
-);    
+);
+},{"./DefineWord":546,"./YourGrid":548,"react":542,"react-dom":362}],548:[function(require,module,exports){
+const React = require('react');
+const ReactDOM = require('react-dom');
+const RcE = React.createElement;
 
-////////////// HELPERS /////////////////
-const xinner0 = function (xmlDoc,tagName) {
-	if( xmlDoc.getElementsByTagName(tagName).length ) {
-		return xmlDoc.getElementsByTagName(tagName)[0].innerHTML;
-	} else {
-		return '';
+const YourGrid = React.createClass({
+	displayName: 'DefineGrid',
+	propTypes: {
+		
+	},
+	getInitialState: function() {
+		return null;
+	},
+	addCell: function() {
+
+	},
+	render: function() {	
+		return RcE('div',{ className: 'defyw-grid', key: 'defyw-grid'} , 'grid' /* no real child-el's for now... */);
 	}
-}
+});
 
-String.prototype.hashCode = function(){
-	var hash = 0;
-	if (this.length == 0) return hash;
-	for (var i = 0; i < this.length; i++) {
-		char = this.charCodeAt(i);
-		hash = ((hash<<5)-hash)+char;
-	}
-	return hash.toString(16);
-}
-
-String.prototype.spanify = function(){ // TODO: something not vulnerable to XSS
-	return this.replace(/<(?=[^\/])/ig,"<span class='")
-				.replaceAll(">","'>")
-				.replace(/<\/([^>]+>)/ig,"</span>");
-}
-
-String.prototype.stripXML = function(){
-	return this.replace(/<[^>]+>/ig,'');
-}
-
-String.prototype.replaceAll = function(search, replacement) {
-    var target = this;
-    return target.split(search).join(replacement);
-};
-},{"ajax-request":41,"ramda":44,"react":542,"react-dom":362}]},{},[544]);
+module.exports = YourGrid;
+},{"react":542,"react-dom":362}]},{},[547]);
