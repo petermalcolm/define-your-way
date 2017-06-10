@@ -108,7 +108,7 @@ const DefineDefinition = React.createClass({
 					 RcE('p',null,R.pathOr('',['state','definition','date'],this)),
 					 RcE('ol',null,
 						 R.pathOr([],['state','definition','variations'],this).map(function(val){
-						 	return RcE('li',{key:val.hashCode()},val.spanify());
+						 	return RcE('li',{key:val.hashCode()},val.stripXML());
 						 })
 					 )
 			),
@@ -222,6 +222,10 @@ String.prototype.spanify = function(){ // TODO: something not vulnerable to XSS
 	return this.replace(/<(?=[^\/])/ig,"<span class='")
 				.replaceAll(">","'>")
 				.replace(/<\/([^>]+>)/ig,"</span>");
+}
+
+String.prototype.stripXML = function(){
+	return this.replace(/<[^>]+>/ig,'');
 }
 
 String.prototype.replaceAll = function(search, replacement) {
