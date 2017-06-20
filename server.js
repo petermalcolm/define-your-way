@@ -18,9 +18,13 @@ var definition = require('./server-side/define-word.js');
 
 //// STATIC FILES on 5000 ////
 // define endpoint: /game/:id
-staticRouter.addRoute('/game/:id', function(req, res, m) {
-	// st(req, res); // static files
-	st('/', res); // static files
+staticRouter.addRoute('/game/:id/*', function(req, res, m) {
+	if( !m.splats.length || JSON.stringify(m.splats) === JSON.stringify(['']) ) {
+		req.url = "/index.html";		
+	} else {
+		req.url = "/assets/" + m.splats[0];
+	}
+	st(req,res);
 });
 // root level:
 var server = http.createServer(function (req, res) {

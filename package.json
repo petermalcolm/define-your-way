@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "bsfy": "browserify public/js/view/UI.js > public/js/main.js"
+    "bsfy": "browserify public/assets/js/view/UI.js > public/assets/js/main.js",
+    "wchy": "watchify public/assets/js/view/UI.js -o public/assets/js/main.js"
   },
   "repository": {
     "type": "git",
