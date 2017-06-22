@@ -27,7 +27,12 @@ staticRouter.addRoute('/game/:id/*', function(req, res, m) {
 	st(req,res);
 });
 // root level: /
-staticRouter.addRoute('/', function(req, res, m) {
+staticRouter.addRoute('/*', function(req, res, m) {
+	if( !m.splats.length || JSON.stringify(m.splats) === JSON.stringify(['']) ) {
+		req.url = "/index.html";		
+	} else {
+		req.url = "/assets/" + m.splats[0];
+	}
 	st(req,res);
 });
 // wire it up:
