@@ -20,13 +20,17 @@ var definition = require('./server-side/define-word.js');
 // define endpoint: /game/:id
 staticRouter.addRoute('/game/:id/*', function(req, res, m) {
 	if( !m.splats.length || JSON.stringify(m.splats) === JSON.stringify(['']) ) {
-		req.url = "/index.html";		
+		req.url = "/game.html";		
 	} else {
 		req.url = "/assets/" + m.splats[0];
 	}
 	st(req,res);
 });
-// root level:
+// root level: /
+staticRouter.addRoute('/', function(req, res, m) {
+	st(req,res);
+});
+// wire it up:
 var server = http.createServer(function (req, res) {
 //	st(req, res); // static files
 	var m = staticRouter.match(req.url)
