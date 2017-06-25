@@ -14,14 +14,14 @@ const WayInSwitcher = React.createClass({
 			RcE(WayIn, { 	id: 'defyw-new',
 							wayInKey : 'new',
 							showMessage : 'Create a New Game',
-							goMessage : 'Go!',
+							goMessage : 'Go! ->',
 							showing : (this.state.kindOfGame === 'new' ),
 							userSwitchesStartMode : this.userSwitchesStartMode } ),
 			RcE('h2', { id: 'defyw-or'}, '- OR -' ),
 			RcE(WayIn, { 	id: 'defyw-old',
 							wayInKey : 'old',
 							showMessage : 'Join an Existing One',
-							goMessage : 'Go!',
+							goMessage : 'Go! ->',
 							showing : (this.state.kindOfGame === 'old' ),
 							userSwitchesStartMode : this.userSwitchesStartMode } )
 		);

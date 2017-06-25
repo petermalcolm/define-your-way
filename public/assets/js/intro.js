@@ -29056,7 +29056,9 @@ const dgetID = document.getElementById.bind( document );
 const WayIn = React.createClass({
 	displayName: 'WayIn',
 	getInitialState: function() {
-		return { gameSlug: '#' };
+		return { gameSlug: '#',
+				 gameNameLegal: true,
+				 };
 	},
 	getInitialProps: function() {
 		return {
@@ -29064,7 +29066,7 @@ const WayIn = React.createClass({
 			showMessage : 'Start or Join',
 			goMessage : 'Go! ->',
 			showing : false,
-			userSwitchesStartMode : undefined
+			userSwitchesStartMode : undefined,
 		};
 	},
 	render: function() {
@@ -29080,9 +29082,16 @@ const WayIn = React.createClass({
 							   key: 'defyw-way-in-'+this.props.wayInKey+'-slug',
 							   id: 'defyw-way-in-'+this.props.wayInKey+'-slug',
 							   type: 'text',
-							   style: { display: (this.props.showing?'':'none') },
+							   style: { display: (this.props.showing?'':'none'),
+							   			color: (this.state.gameNameLegal?'':'red') },
 							   onChange: this.userTypesSlug 
 							}),
+				RcE('p', {	className: 'defyw-way-in-game-name-warning',
+							key: 'defyw-way-in-game-name-warning-'+this.props.wayInKey,
+						    style: { display: (this.state.gameNameLegal?'none':''),
+						   			 fontSize: '.75em' },
+							},
+							'Game names can only have letters, numbers or a dash (-)' ),
 				RcE('a',{  className:'defyw-way-in-'+this.props.wayInKey+'-go-link',
 						   key: 'defyw-way-in-'+this.props.wayInKey+'-go-link',
 						   id: 'defyw-way-in-'+this.props.wayInKey+'-go-link',
@@ -29104,7 +29113,11 @@ const WayIn = React.createClass({
 	},
 	userTypesSlug: function(e) {
 		// TODO: sanitize - live errors if bad (ajax to see if game exists is on-clicking Go!)
-		this.setState({ gameSlug: e.target.value })
+		if( e.target.value.match(/[^\w-]/) !== null ) {
+			this.setState({ gameNameLegal: false });
+		} else {
+			this.setState({ gameNameLegal: true, gameSlug: e.target.value })
+		}
 	}
 });
 
@@ -29127,14 +29140,14 @@ const WayInSwitcher = React.createClass({
 			RcE(WayIn, { 	id: 'defyw-new',
 							wayInKey : 'new',
 							showMessage : 'Create a New Game',
-							goMessage : 'Go!',
+							goMessage : 'Go! ->',
 							showing : (this.state.kindOfGame === 'new' ),
 							userSwitchesStartMode : this.userSwitchesStartMode } ),
 			RcE('h2', { id: 'defyw-or'}, '- OR -' ),
 			RcE(WayIn, { 	id: 'defyw-old',
 							wayInKey : 'old',
 							showMessage : 'Join an Existing One',
-							goMessage : 'Go!',
+							goMessage : 'Go! ->',
 							showing : (this.state.kindOfGame === 'old' ),
 							userSwitchesStartMode : this.userSwitchesStartMode } )
 		);
