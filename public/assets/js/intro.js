@@ -29030,7 +29030,7 @@ if (isWindows) {
 },{"_process":15,"util":39}],226:[function(require,module,exports){
 const React = require('react');
 const ReactDOM = require('react-dom');
-const WayIn = require('./WayIn');
+const WayInSwitcher = require('./WayInSwitcher');
 
 const RcE = React.createElement;
 const dgetID = document.getElementById.bind( document );
@@ -29039,65 +29039,112 @@ ReactDOM.render(
 	RcE('div', { id: 'defyw' }, 
 		RcE('h1', { id: 'defyw-title' }, 'Define Your Way'),
 		RcE('div', { id: 'defyw-intro'}, 'Introductory info here ... ' ),
-		RcE(WayIn, { 	id: 'defyw-new',
-						wayInKey : 'new',
-						showMessage : 'Create a New Game',
-						goMessage : 'Go!' } ),
-		RcE('h2', { id: 'defyw-or'}, '- OR -' ),
-		RcE(WayIn, { 	id: 'defyw-old',
-						wayInKey : 'old',
-						showMessage : 'Join an Existing One',
-						goMessage : 'Go!' } )
+		RcE(WayInSwitcher, { id: 'defyw-switcher',
+							 key: 'defyw-switcher' }
+		)
 	),
 	dgetID('root')
 );
-},{"./WayIn":227,"react":224,"react-dom":44}],227:[function(require,module,exports){
+},{"./WayInSwitcher":228,"react":224,"react-dom":44}],227:[function(require,module,exports){
 const React = require('react');
 const ReactDOM = require('react-dom');
 const request = require('ajax-request');
+
 const RcE = React.createElement;
+const dgetID = document.getElementById.bind( document );
 
 const WayIn = React.createClass({
 	displayName: 'WayIn',
+	getInitialState: function() {
+		return { gameSlug: '#' };
+	},
 	getInitialProps: function() {
 		return {
 			wayInKey : 'default',
 			showMessage : 'Start or Join',
-			goMessage : 'Go! ->'
+			goMessage : 'Go! ->',
+			showing : false,
+			userSwitchesStartMode : undefined
 		};
 	},
 	render: function() {
-		const { wayInKey, showMessage, goMessage } = this.props; 
+		// const { wayInKey, showMessage, goMessage } = this.props; 
 		return RcE('form',{ className: 'defyw-way-in', key: 'defyw-way-in' },
 			[
 				RcE('button',{ className:'defyw-way-in-'+this.props.wayInKey+'-show-btn',
 							   key: 'defyw-way-in-'+this.props.wayInKey+'-show-btn',
-							   onClick: this.showSlugField }, 
+							   onClick: this.userSwitchesStartMode
+							 }, 
 							   this.props.showMessage ),
 				RcE('input',{  className:'defyw-way-in-'+this.props.wayInKey+'-slug',
 							   key: 'defyw-way-in-'+this.props.wayInKey+'-slug',
 							   id: 'defyw-way-in-'+this.props.wayInKey+'-slug',
 							   type: 'text',
-							   style: { display:'none' } }),
-				RcE('button',{ className:'defyw-way-in-'+this.props.wayInKey+'-go-btn',
-							   key: 'defyw-way-in-'+this.props.wayInKey+'-go-btn',
-							   id: 'defyw-way-in-'+this.props.wayInKey+'-go-btn',
-							   style: { display:'none' },
-							   onClick: this.showSlugField }, 
-							   this.props.goMessage )
+							   style: { display: (this.props.showing?'':'none') },
+							   onChange: this.userTypesSlug 
+							}),
+				RcE('a',{  className:'defyw-way-in-'+this.props.wayInKey+'-go-link',
+						   key: 'defyw-way-in-'+this.props.wayInKey+'-go-link',
+						   id: 'defyw-way-in-'+this.props.wayInKey+'-go-link',
+						   href: '/game/' + this.state.gameSlug + '/',
+						   style: { display: (this.props.showing?'':'none') } 
+						}, 
+						this.props.goMessage )
 			]
 		);
 	},
-	showSlugField: function(e) { // this a very jQuery way - TODO: make it Reactive!
+	componentDidUpdate: function() {
+		if(this.props.showing){
+			dgetID('defyw-way-in-'+this.props.wayInKey+'-slug').focus();
+		}
+	},
+	userSwitchesStartMode: function(e) {
 		e.preventDefault();
-		var slugField = document.getElementById('defyw-way-in-'+this.props.wayInKey+'-slug');
-		slugField.style.display = '';
-		slugField.focus();
-		var goField = document.getElementById('defyw-way-in-'+this.props.wayInKey+'-go-btn');
-		goField.style.display = '';
+		this.props.userSwitchesStartMode( this.props.wayInKey );
+	},
+	userTypesSlug: function(e) {
+		// TODO: sanitize - live errors if bad (ajax to see if game exists is on-clicking Go!)
+		this.setState({ gameSlug: e.target.value })
 	}
 });
 
 module.exports = WayIn;
 
-},{"ajax-request":41,"react":224,"react-dom":44}]},{},[226]);
+},{"ajax-request":41,"react":224,"react-dom":44}],228:[function(require,module,exports){
+const React = require('react');
+const ReactDOM = require('react-dom');
+const WayIn = require('./WayIn');
+
+const RcE = React.createElement;
+
+const WayInSwitcher = React.createClass({
+	getInitialState: function() {
+		return { kindOfGame: 'neither' };
+	},
+	displayName: 'WayInSwitcher',
+	render: function() {
+		return RcE('div',{},
+			RcE(WayIn, { 	id: 'defyw-new',
+							wayInKey : 'new',
+							showMessage : 'Create a New Game',
+							goMessage : 'Go!',
+							showing : (this.state.kindOfGame === 'new' ),
+							userSwitchesStartMode : this.userSwitchesStartMode } ),
+			RcE('h2', { id: 'defyw-or'}, '- OR -' ),
+			RcE(WayIn, { 	id: 'defyw-old',
+							wayInKey : 'old',
+							showMessage : 'Join an Existing One',
+							goMessage : 'Go!',
+							showing : (this.state.kindOfGame === 'old' ),
+							userSwitchesStartMode : this.userSwitchesStartMode } )
+		);
+	},
+	userSwitchesStartMode: function(newMode) {
+		console.log(newMode,'game');
+		this.setState({kindOfGame : newMode});
+	}
+});
+
+module.exports = WayInSwitcher;
+
+},{"./WayIn":227,"react":224,"react-dom":44}]},{},[226]);
