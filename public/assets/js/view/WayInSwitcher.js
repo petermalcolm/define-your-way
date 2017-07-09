@@ -6,10 +6,15 @@ const RcE = React.createElement;
 
 const WayInSwitcher = React.createClass({
 	getInitialState: function() {
-		return { kindOfGame: 'neither' };
+		return { kindOfGame: 'neither',
+				 showing: false
+				};
 	},
 	displayName: 'WayInSwitcher',
 	render: function() {
+		if( !this.state.showing ) {
+			return RcE('div',{}, 'Please sign in.' );
+		}
 		return RcE('div',{},
 			RcE(WayIn, { 	id: 'defyw-new',
 							wayInKey : 'new',

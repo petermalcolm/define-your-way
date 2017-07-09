@@ -29030,7 +29030,36 @@ if (isWindows) {
 },{"_process":15,"util":39}],226:[function(require,module,exports){
 const React = require('react');
 const ReactDOM = require('react-dom');
+
+const RcE = React.createElement;
+
+const SignInSwitcher = React.createClass({
+	displayName: 'SignInSwitcher',
+	getInitialState: function() {
+		return { kindOfSignIn: 'login' };
+	},
+	render: function() {
+		return RcE('div',{},
+			RcE('form',{},
+				RcE('h2',{},'Log In'),
+				RcE('button',{ onClick: this.userClicksImNew },'I\'m New to This'),
+				RcE('input')
+			   ),
+			RcE('form',{},RcE('h2',{},'Create An Account'),
+				RcE('input'))
+		);
+	},
+	userClicksImNew: function(e) {
+		e.preventDefault();
+	}
+});
+
+module.exports = SignInSwitcher;
+},{"react":224,"react-dom":44}],227:[function(require,module,exports){
+const React = require('react');
+const ReactDOM = require('react-dom');
 const WayInSwitcher = require('./WayInSwitcher');
+const SignInSwitcher = require('./SignInSwitcher');
 
 const RcE = React.createElement;
 const dgetID = document.getElementById.bind( document );
@@ -29039,13 +29068,15 @@ ReactDOM.render(
 	RcE('div', { id: 'defyw' }, 
 		RcE('h1', { id: 'defyw-title' }, 'Define Your Way'),
 		RcE('div', { id: 'defyw-intro'}, 'Introductory info here ... ' ),
+		RcE(SignInSwitcher, { id: 'defyw-signin-switcher',
+							  key: 'defyw-signin-switcher'} ),
 		RcE(WayInSwitcher, { id: 'defyw-switcher',
 							 key: 'defyw-switcher' }
 		)
 	),
 	dgetID('root')
 );
-},{"./WayInSwitcher":228,"react":224,"react-dom":44}],227:[function(require,module,exports){
+},{"./SignInSwitcher":226,"./WayInSwitcher":229,"react":224,"react-dom":44}],228:[function(require,module,exports){
 const React = require('react');
 const ReactDOM = require('react-dom');
 const request = require('ajax-request');
@@ -29123,7 +29154,7 @@ const WayIn = React.createClass({
 
 module.exports = WayIn;
 
-},{"ajax-request":41,"react":224,"react-dom":44}],228:[function(require,module,exports){
+},{"ajax-request":41,"react":224,"react-dom":44}],229:[function(require,module,exports){
 const React = require('react');
 const ReactDOM = require('react-dom');
 const WayIn = require('./WayIn');
@@ -29132,10 +29163,15 @@ const RcE = React.createElement;
 
 const WayInSwitcher = React.createClass({
 	getInitialState: function() {
-		return { kindOfGame: 'neither' };
+		return { kindOfGame: 'neither',
+				 showing: false
+				};
 	},
 	displayName: 'WayInSwitcher',
 	render: function() {
+		if( !this.state.showing ) {
+			return RcE('div',{}, 'Please sign in.' );
+		}
 		return RcE('div',{},
 			RcE(WayIn, { 	id: 'defyw-new',
 							wayInKey : 'new',
@@ -29160,4 +29196,4 @@ const WayInSwitcher = React.createClass({
 
 module.exports = WayInSwitcher;
 
-},{"./WayIn":227,"react":224,"react-dom":44}]},{},[226]);
+},{"./WayIn":228,"react":224,"react-dom":44}]},{},[227]);
