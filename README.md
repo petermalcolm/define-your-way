@@ -6,5 +6,5 @@ Scoring in this version is even more complicated.  But this site does all the ha
 
 ## What is Overshooting? (for those who love details)
 
-For simplicity, let's say a player wins on the very first round. To do this, he or she would have receive at least 7 creativity points *and* at least 7 accuracy points.  So, 7C+8A (7 creativity and 8 accuracy) would be a winning score.  But a player receiving 6C+8A would wrap around the board the horizontal way, and end up as if she had not scored any points at all -- we call this the Pac Man &trade; rule.
+For simplicity, let's say a player wins on the very first round. To do this, he or she would have receive at least 7 creativity points *and* at least 7 accuracy points.  So, 7C+8A (7 creativity and 8 accuracy) would be a winning score.  But a player receiving 6C+8A would wrap around the board the horizontal way, and end up as if she had not scored any accuracy points at all -- we call this the Pac Man&trade; rule. A player can overshoot like this and wrap around the board accuracy/horizontally or creative/vertically, sometimes multiple times per game.
 
