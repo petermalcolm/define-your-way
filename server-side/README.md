@@ -37,3 +37,12 @@ Here is the underlying data JSON data structure for a Define Your Way game:
 	}]
 }
 ```
+
+And here is the data structure for a user:
+```
+{
+	"name": "Example Person",
+	"email": "person@example.com",
+	"password": "hashOfPassword"
+}
+```
