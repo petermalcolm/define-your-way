@@ -10,17 +10,41 @@ const SignInSwitcher = React.createClass({
 	},
 	render: function() {
 		return RcE('div',{},
-			RcE('form',{},
+			RcE('form',{
+						style: { display: (this.state.kindOfSignIn==='login'?'':'none') } },
 				RcE('h2',{},'Log In'),
-				RcE('button',{ onClick: this.userClicksImNew },'I\'m New to This'),
-				RcE('input')
+				RcE('button',{ 
+					className: 'defyw-im-new-btn defyw-small-btn',
+					onClick: this.userClicksImNew },'I\'m New Here'),
+				RcE('label',{},'Email'),
+				RcE('input'),
+				RcE('label',{},'Password'),
+				RcE('input'),
+				RcE('button',{},'Log In')
 			   ),
-			RcE('form',{},RcE('h2',{},'Create An Account'),
-				RcE('input'))
+			RcE('form',{
+						style: { display: (this.state.kindOfSignIn==='signup'?'':'none') } },
+				RcE('h2',{},'Create an Account'),
+				RcE('button',{ 
+					className: 'defyw-im-old-btn defyw-small-btn defyw-btn',
+					onClick: this.userClicksImOld },'I Already Have an Account'),
+				RcE('label',{},'Email'),
+				RcE('input'),
+				RcE('label',{},'Name'),
+				RcE('input'),
+				RcE('label',{},'Password'),
+				RcE('input'),
+				RcE('button',{},'Create an Account')
+			   )
 		);
 	},
 	userClicksImNew: function(e) {
 		e.preventDefault();
+		this.setState( { kindOfSignIn:'signup' } );
+	},
+	userClicksImOld: function(e) {
+		e.preventDefault();
+		this.setState( { kindOfSignIn:'login' } );
 	}
 });
 

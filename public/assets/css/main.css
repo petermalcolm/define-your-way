@@ -72,8 +72,23 @@ textarea {
     color: red;
 }
 
+.defyw-small-btn {
+    display: block;
+    font-size: x-small;
+    margin: -10px 10px 10px 20px;
+}
 
-
+form label {
+    display: block;
+    margin-left: 5px;
+}
+form input {
+    margin-bottom: 10px;
+    margin-left: 5px;
+}
+form button {
+    display: block;
+}
 
 
 
