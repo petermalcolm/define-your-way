@@ -28,6 +28,10 @@ staticRouter.addRoute('/game/:id/*', function(req, res, m) {
 });
 // root level: /
 staticRouter.addRoute('/*', function(req, res, m) {
+	console.log('ROOT ROUTE:',req.method);
+	// TODO: use the querystring module as described here: https://stackoverflow.com/questions/4295782/how-do-you-extract-post-data-in-node-js
+	req.method = 'GET'; // hack to serve static files after saving post data
+	console.log('ROOT ROUTE FIX:',req.method);
 	if( !m.splats.length || JSON.stringify(m.splats) === JSON.stringify(['']) ) {
 		req.url = "/index.html";		
 	} else {

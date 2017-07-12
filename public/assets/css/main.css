@@ -86,7 +86,7 @@ form input {
     margin-bottom: 10px;
     margin-left: 5px;
 }
-form button {
+form button, form input[type="submit"] {
     display: block;
 }
 

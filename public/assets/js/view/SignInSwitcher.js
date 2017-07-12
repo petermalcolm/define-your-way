@@ -11,16 +11,19 @@ const SignInSwitcher = React.createClass({
 	render: function() {
 		return RcE('div',{},
 			RcE('form',{
-						style: { display: (this.state.kindOfSignIn==='login'?'':'none') } },
+						style: { display: (this.state.kindOfSignIn==='login'?'':'none') }, 
+						action: '/',
+						method: 'post' },
 				RcE('h2',{},'Log In'),
 				RcE('button',{ 
 					className: 'defyw-im-new-btn defyw-small-btn',
 					onClick: this.userClicksImNew },'I\'m New Here'),
 				RcE('label',{},'Email'),
-				RcE('input'),
+				RcE('input',{name:'email'}),
 				RcE('label',{},'Password'),
-				RcE('input'),
-				RcE('button',{},'Log In')
+				RcE('input',{name:'password'}),
+				RcE('input',{ type:'submit',
+							  value:'Log In'})
 			   ),
 			RcE('form',{
 						style: { display: (this.state.kindOfSignIn==='signup'?'':'none') } },
@@ -29,11 +32,11 @@ const SignInSwitcher = React.createClass({
 					className: 'defyw-im-old-btn defyw-small-btn defyw-btn',
 					onClick: this.userClicksImOld },'I Already Have an Account'),
 				RcE('label',{},'Email'),
-				RcE('input'),
+				RcE('input',{name:'email'}),
 				RcE('label',{},'Name'),
-				RcE('input'),
+				RcE('input',{name:'name'}),
 				RcE('label',{},'Password'),
-				RcE('input'),
+				RcE('input',{name:'password'}),
 				RcE('button',{},'Create an Account')
 			   )
 		);
