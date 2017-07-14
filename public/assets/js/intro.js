@@ -29042,7 +29042,7 @@ const SignInSwitcher = React.createClass({
 		return RcE('div',{},
 			RcE('form',{
 						style: { display: (this.state.kindOfSignIn==='login'?'':'none') }, 
-						action: '/',
+						action: '/login',
 						method: 'post' },
 				RcE('h2',{},'Log In'),
 				RcE('button',{ 
@@ -29056,7 +29056,9 @@ const SignInSwitcher = React.createClass({
 							  value:'Log In'})
 			   ),
 			RcE('form',{
-						style: { display: (this.state.kindOfSignIn==='signup'?'':'none') } },
+						style: { display: (this.state.kindOfSignIn==='signup'?'':'none') },
+						action: '/signup',
+						method: 'post' },
 				RcE('h2',{},'Create an Account'),
 				RcE('button',{ 
 					className: 'defyw-im-old-btn defyw-small-btn defyw-btn',

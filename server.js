@@ -1,20 +1,20 @@
 //// INCLUDES ////
 // static file server using ecstatic
-var http = require('http');
-var ecstatic = require('ecstatic');
-// var st = ecstatic(__dirname + '/public');
-var st = ecstatic({ root: __dirname + '/public', handleError: false })
+const http = require('http');
+const ecstatic = require('ecstatic');
+const st = ecstatic({ root: __dirname + '/public', handleError: false })
 
 // and a db to cache some API responses
-var levelup = require('level');
-var db = levelup('./define-db')
-// and simple little endpoint using routes
-var Router = require('routes');
-var staticRouter = Router();
-var apiRouter = Router();
-// my includes
-var pick = require('./server-side/pick-word.js');
-var definition = require('./server-side/define-word.js');
+const levelup = require('level');
+const db = levelup('./define-db')
+// and simple little endpoints using routes
+const Router = require('routes');
+const staticRouter = Router();
+const apiRouter = Router();
+const qs = require('querystring');
+// local includes
+const pick = require('./server-side/pick-word.js');
+const definition = require('./server-side/define-word.js');
 
 //// STATIC FILES on 5000 ////
 // define endpoint: /game/:id
@@ -26,12 +26,63 @@ staticRouter.addRoute('/game/:id/*', function(req, res, m) {
 	}
 	st(req,res);
 });
+// endpoint: /login for POST submissions
+staticRouter.addRoute('/login', function(req, res, m) {
+	// TODO: use the querystring module as described here: https://stackoverflow.com/questions/4295782/how-do-you-extract-post-data-in-node-js
+	if('POST'===req.method) {
+        var body = '';
+
+        req.on('data', function (data) {
+            body += data;
+
+            // Too much POST data, kill the connection!
+            // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
+            if (body.length > 1e6)
+                req.connection.destroy();
+        });
+
+        req.on('end', function () {
+            var post = qs.parse(body);
+            // debug:
+	        res.end('greetings, '+post['email']+'.\n');
+	        // eventually, redirect now-logged-in user:
+			res.writeHead(302, {
+			  'Location': '/'
+			  //add other headers here...
+			});
+			res.end();
+        });
+	} 
+});
+// endpoint: /signup for POST submissions
+staticRouter.addRoute('/signup', function(req, res, m) {
+	if('POST'===req.method) {
+        var body = '';
+
+        req.on('data', function (data) {
+            body += data;
+
+            // Too much POST data, kill the connection!
+            // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
+            if (body.length > 1e6)
+                req.connection.destroy();
+        });
+
+        req.on('end', function () {
+            var post = qs.parse(body);
+            // debug
+			res.end('greetings, '+post['email']+'.\n');
+			// eventually, redirect new user:
+			res.writeHead(302, {
+			  'Location': '/'
+			  //add other headers here...
+			});
+			res.end();
+        });
+	} 
+});
 // root level: /
 staticRouter.addRoute('/*', function(req, res, m) {
-	console.log('ROOT ROUTE:',req.method);
-	// TODO: use the querystring module as described here: https://stackoverflow.com/questions/4295782/how-do-you-extract-post-data-in-node-js
-	req.method = 'GET'; // hack to serve static files after saving post data
-	console.log('ROOT ROUTE FIX:',req.method);
 	if( !m.splats.length || JSON.stringify(m.splats) === JSON.stringify(['']) ) {
 		req.url = "/index.html";		
 	} else {
@@ -39,14 +90,15 @@ staticRouter.addRoute('/*', function(req, res, m) {
 	}
 	st(req,res);
 });
+
 // wire it up:
-var server = http.createServer(function (req, res) {
+const server = http.createServer(function (req, res) {
 //	st(req, res); // static files
 	var m = staticRouter.match(req.url)
 		if (m) m.fn(req, res, m)
 		else {
-			res.statusCode = 404
-			res.end('not found\n')
+			res.statusCode = 404;
+			res.end('not found\n');
 		}
 });
 server.listen(5000);
