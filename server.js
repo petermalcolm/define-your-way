@@ -15,6 +15,8 @@ const qs = require('querystring');
 // local includes
 const pick = require('./server-side/pick-word.js');
 const definition = require('./server-side/define-word.js');
+const userlib = require('./server-side/users.js');
+const users = new userlib(db);
 
 //// STATIC FILES on 5000 ////
 // define endpoint: /game/:id
@@ -28,7 +30,7 @@ staticRouter.addRoute('/game/:id/*', function(req, res, m) {
 });
 // endpoint: /login for POST submissions
 staticRouter.addRoute('/login', function(req, res, m) {
-	// TODO: use the querystring module as described here: https://stackoverflow.com/questions/4295782/how-do-you-extract-post-data-in-node-js
+	// Thanks: https://stackoverflow.com/questions/4295782/how-do-you-extract-post-data-in-node-js
 	if('POST'===req.method) {
         var body = '';
 
@@ -44,7 +46,8 @@ staticRouter.addRoute('/login', function(req, res, m) {
         req.on('end', function () {
             var post = qs.parse(body);
             // debug:
-	        res.end('greetings, '+post['email']+'.\n');
+	        // res.end('greetings, '+post['email']+'.\n');
+	        res.end(users.authenticate(post['email'],post['password']));
 	        // eventually, redirect now-logged-in user:
 			res.writeHead(302, {
 			  'Location': '/'
@@ -52,7 +55,13 @@ staticRouter.addRoute('/login', function(req, res, m) {
 			});
 			res.end();
         });
-	} 
+	} else {
+		res.writeHead(302, {
+		  'Location': '/'
+		  //add other headers here...
+		});
+		res.end();
+	}
 });
 // endpoint: /signup for POST submissions
 staticRouter.addRoute('/signup', function(req, res, m) {
@@ -79,6 +88,12 @@ staticRouter.addRoute('/signup', function(req, res, m) {
 			});
 			res.end();
         });
+	} else {
+		res.writeHead(302, {
+		  'Location': '/'
+		  //add other headers here...
+		});
+		res.end();
 	} 
 });
 // root level: /

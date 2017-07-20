@@ -17,11 +17,12 @@ const SignInSwitcher = React.createClass({
 				RcE('h2',{},'Log In'),
 				RcE('button',{ 
 					className: 'defyw-im-new-btn defyw-small-btn',
-					onClick: this.userClicksImNew },'I\'m New Here'),
+					onClick: this.userClicksImNew },'Wait, I\'m New Here'),
 				RcE('label',{},'Email'),
 				RcE('input',{name:'email'}),
 				RcE('label',{},'Password'),
-				RcE('input',{name:'password'}),
+				RcE('input',{	type:'password',
+								name:'password'}),
 				RcE('input',{ type:'submit',
 							  value:'Log In'})
 			   ),
@@ -32,13 +33,14 @@ const SignInSwitcher = React.createClass({
 				RcE('h2',{},'Create an Account'),
 				RcE('button',{ 
 					className: 'defyw-im-old-btn defyw-small-btn defyw-btn',
-					onClick: this.userClicksImOld },'I Already Have an Account'),
+					onClick: this.userClicksImOld },'Wait, I Already Have an Account'),
 				RcE('label',{},'Email'),
 				RcE('input',{name:'email'}),
 				RcE('label',{},'Name'),
 				RcE('input',{name:'name'}),
 				RcE('label',{},'Password'),
-				RcE('input',{name:'password'}),
+				RcE('input',{	type:'password',
+								name:'password'}),
 				RcE('button',{},'Create an Account')
 			   )
 		);
