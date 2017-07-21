@@ -47,13 +47,22 @@ staticRouter.addRoute('/login', function(req, res, m) {
             var post = qs.parse(body);
             // debug:
 	        // res.end('greetings, '+post['email']+'.\n');
-	        res.end(users.authenticate(post['email'],post['password']));
-	        // eventually, redirect now-logged-in user:
-			res.writeHead(302, {
-			  'Location': '/'
-			  //add other headers here...
-			});
-			res.end();
+	        users.authenticate(post['email'],post['password'],function(err,id){
+	        	var result;
+				if(err) {
+					result = '' + post['email'] + ' not found';
+				} else {
+				    result = '' + post['email'] + ' found!';
+				}
+				console.log(result); // debugging
+		        // // eventually, redirect now-logged-in user:
+				// res.writeHead(302, {
+				//   'Location': '/'
+				//   //add other headers here...
+				// });
+				// res.end();
+				res.end(result+'\n'); // debugging
+	        });
         });
 	} else {
 		res.writeHead(302, {
