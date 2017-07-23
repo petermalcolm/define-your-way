@@ -31,79 +31,72 @@ staticRouter.addRoute('/game/:id/*', function(req, res, m) {
 // endpoint: /login for POST submissions
 staticRouter.addRoute('/login', function(req, res, m) {
 	// Thanks: https://stackoverflow.com/questions/4295782/how-do-you-extract-post-data-in-node-js
-	if('POST'===req.method) {
-        var body = '';
-
-        req.on('data', function (data) {
-            body += data;
-
-            // Too much POST data, kill the connection!
-            // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
-            if (body.length > 1e6)
-                req.connection.destroy();
-        });
-
-        req.on('end', function () {
-            var post = qs.parse(body);
-            // debug:
-	        // res.end('greetings, '+post['email']+'.\n');
-	        users.authenticate(post['email'],post['password'],function(err,id){
-	        	var result;
-				if(err) {
-					result = '' + post['email'] + ' not found';
-				} else {
-				    result = '' + post['email'] + ' found!';
-				}
-				console.log(result); // debugging
-		        // // eventually, redirect now-logged-in user:
-				// res.writeHead(302, {
-				//   'Location': '/'
-				//   //add other headers here...
-				// });
-				// res.end();
-				res.end(result+'\n'); // debugging
-	        });
-        });
-	} else {
-		res.writeHead(302, {
-		  'Location': '/'
-		  //add other headers here...
-		});
-		res.end();
+	if('POST'!==req.method) {
+		redirect(res,'/',[]);
+		return;
 	}
+	parsePost_then( req, function(body) {
+		var post = qs.parse(body);
+		users.authenticate(post['email'],post['password'],function(err,id){
+			var result;
+			if(err) {
+				result = '' + post['email'] + ' not found';
+			} else {
+			    result = '' + post['email'] + ' found!';
+			}
+			console.log(result); // debugging
+		    // // eventually, redirect now-logged-in user:
+			// res.writeHead(302, {
+			//   'Location': '/'
+			//   //add other headers here...
+			// });
+			// res.end();
+			res.end(result+'\n'); // debugging
+		});
+	});
 });
 // endpoint: /signup for POST submissions
 staticRouter.addRoute('/signup', function(req, res, m) {
-	if('POST'===req.method) {
-        var body = '';
+	if('POST'!==req.method) {
+		redirect(res,'/',[]);
+		return;
+	}
+    var body = '';
 
-        req.on('data', function (data) {
-            body += data;
+    req.on('data', function (data) {
+        body += data;
 
-            // Too much POST data, kill the connection!
-            // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
-            if (body.length > 1e6)
-                req.connection.destroy();
+        // Too much POST data, kill the connection!
+        // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
+        if (body.length > 1e6)
+            req.connection.destroy();
+    });
+
+    req.on('end', function () {
+        var post = qs.parse(body);
+        users.create(post['email'],post['password'],function(err,id){
+        	var result;
+			if(err) {
+				result = '' + post['email'] + ' not found';
+			} else {
+			    result = '' + post['email'] + ' found!';
+			}
+			console.log(result); // debugging
+	        // // eventually, redirect now-logged-in user:
+			// res.writeHead(302, {
+			//   'Location': '/'
+			//   //add other headers here...
+			// });
+			// res.end();
+			res.end(result+'\n'); // debugging
         });
-
-        req.on('end', function () {
-            var post = qs.parse(body);
-            // debug
-			res.end('greetings, '+post['email']+'.\n');
-			// eventually, redirect new user:
-			res.writeHead(302, {
-			  'Location': '/'
-			  //add other headers here...
-			});
-			res.end();
-        });
-	} else {
+		// eventually, redirect new user:
 		res.writeHead(302, {
 		  'Location': '/'
 		  //add other headers here...
 		});
 		res.end();
-	} 
+    });
 });
 // root level: /
 staticRouter.addRoute('/*', function(req, res, m) {
@@ -126,6 +119,31 @@ const server = http.createServer(function (req, res) {
 		}
 });
 server.listen(5000);
+
+/// helpers for static ///
+const redirect = function(res, to, headers) {
+	res.writeHead(302, {
+	  'Location': to
+	  //add other headers here...
+	});
+	res.end();
+}
+
+const parsePost_then = function( req, do_callback ) {
+    var body = '';
+    req.on('data', function (data) {
+        body += data;
+
+        // Too much POST data, kill the connection!
+        // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
+        if (body.length > 1e6)
+            req.connection.destroy();
+    });
+    // console.log(body); // debugging
+    req.on('end', function() { 
+    	do_callback(body) 
+    });
+}
 
 //// API on 5411 ////
 // define endpoint: /word
