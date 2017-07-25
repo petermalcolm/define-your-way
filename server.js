@@ -37,14 +37,14 @@ staticRouter.addRoute('/login', function(req, res, m) {
 	}
 	parsePost_then( req, function(body) {
 		var post = qs.parse(body);
-		users.authenticate(post['email'],post['password'],function(err,id){
+		users.authenticate(post['email'],post['password'],function(err,userInfo){
 			var result;
 			if(err) {
 				result = '' + post['email'] + ' not found';
 			} else {
 			    result = '' + post['email'] + ' found!';
 			}
-			console.log(result); // debugging
+			console.log(result,userInfo); // debugging
 		    // // eventually, redirect now-logged-in user:
 			// res.writeHead(302, {
 			//   'Location': '/'
@@ -74,12 +74,14 @@ staticRouter.addRoute('/signup', function(req, res, m) {
 
     req.on('end', function () {
         var post = qs.parse(body);
-        users.create(post['email'],post['password'],function(err,id){
+        users.create({	name : post['name'],
+        				email : post['email'],
+        				password : post['password'],},function(err,id){
         	var result;
 			if(err) {
-				result = '' + post['email'] + ' not found';
+				result = '' + post['email'] + ' not created';
 			} else {
-			    result = '' + post['email'] + ' found!';
+			    result = '' + post['email'] + ' created!';
 			}
 			console.log(result); // debugging
 	        // // eventually, redirect now-logged-in user:
@@ -90,12 +92,6 @@ staticRouter.addRoute('/signup', function(req, res, m) {
 			// res.end();
 			res.end(result+'\n'); // debugging
         });
-		// eventually, redirect new user:
-		res.writeHead(302, {
-		  'Location': '/'
-		  //add other headers here...
-		});
-		res.end();
     });
 });
 // root level: /
