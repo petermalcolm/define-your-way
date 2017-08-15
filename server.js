@@ -83,7 +83,7 @@ staticRouter.addRoute('/signup', function(req, res, m) {
         				password : post['password'],},function(err,id){
         	var result;
 			if(err) {
-				result = '' + post['email'] + ' not created';
+				result = 'An account already exists for ' + post['email'];
 			} else {
 			    result = '' + post['email'] + ' created!';
 			}

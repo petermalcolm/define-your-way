@@ -16,9 +16,17 @@ try {
 
 const Users = function(db) {
 	const create = function(userInfo,callback) {
-		userInfo.password = md5(userInfo.password + salt);
-		db.put(userInfo.email,JSON.stringify(userInfo),function(err) {
-			return callback(err);
+		db.get(userInfo.email,function(err,data) {
+			if( null !== err ) {
+				userInfo.password = md5(userInfo.password + salt);
+				db.put(userInfo.email,JSON.stringify(userInfo),function(err) {
+					return callback(err);
+				});	
+			} else {
+				var alreadyThere = new Error('User already exists');
+				alreadyThere.type = 'UserExistsError';
+				return callback(alreadyThere);
+			}
 		});
 	};
 
