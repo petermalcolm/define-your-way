@@ -8,7 +8,7 @@ try {
     	console.log('_salt.js\n');
     	console.log('at the root level directory (next to server.js).');
     	console.log('In case your feeling lazy, use this as the content of that file:\n');
-    	console.log('module.exports = \''+Math.random().toString(36).substring(16)+'\';\n');
+    	console.log('module.exports = \''+Math.random().toString(36).substring(2)+'\';\n');
     	console.log('That salt was just created randomly, just for you.  Feel free to change it.');
         process.exit();
     }
