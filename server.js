@@ -39,10 +39,14 @@ staticRouter.addRoute('/login', function(req, res, m) {
 		var post = qs.parse(body);
 		users.authenticate(post['email'],post['password'],function(err,userInfo){
 			var result;
-			if(err) {
+			if(err && 'NotFoundError' === err.type ) {
 				result = '' + post['email'] + ' not found';
+			} else if (err && 'BadPasswordError' === err.type) {
+				result = 'sorry, wrong password for ' + post['email'];
+			} else if (err && 'BadDataError' === err.type) {
+				result = 'sorry, there is a problem with the user account for ' + post['email'];
 			} else {
-			    result = '' + post['email'] + ' found!';
+				result = '' + post['email'] + ' found!';
 			}
 			console.log(result,userInfo); // debugging
 		    // // eventually, redirect now-logged-in user:

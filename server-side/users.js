@@ -24,7 +24,21 @@ const Users = function(db) {
 
 	const authenticate = function(email,password,callback) {
 		db.get(email,function(err,data) {
-			return callback(err,data);
+			if( null !== err ) {
+				return callback(err,null); // NotFoundError
+			}
+			if( !JSON.parse(data).password ) {
+				var aaak = new Error('Aaak! Programmer error.');
+				aaak.type = 'BadDataError';
+				return callback(aaak,data);
+			}
+			const givenHash = md5(password + salt);
+			if( givenHash !== JSON.parse(data).password ) {
+				var bad = new Error('Please try again.');
+				bad.type = 'BadPasswordError';
+				return callback(bad,null);
+			}
+			return callback(null,data);
 		});
 	};
 	// interface
