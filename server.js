@@ -4,9 +4,10 @@ const http = require('http');
 const ecstatic = require('ecstatic');
 const st = ecstatic({ root: __dirname + '/public', handleError: false })
 
-// and a db to cache some API responses
+// and a db for users, games and cached API responses
 const levelup = require('level');
-const db = levelup('./define-db')
+const db = levelup('./define-db');
+
 // and simple little endpoints using routes
 const Router = require('routes');
 const staticRouter = Router();
@@ -37,7 +38,7 @@ staticRouter.addRoute('/login', function(req, res, m) {
 	}
 	parsePost_then( req, function(body) {
 		var post = qs.parse(body);
-		users.authenticate(post['email'],post['password'],function(err,userInfo){
+		users.authenticate(post['email'],post['password'],function(err,userToken){
 			var result;
 			if(err && 'NotFoundError' === err.type ) {
 				result = '' + post['email'] + ' not found';
@@ -46,9 +47,9 @@ staticRouter.addRoute('/login', function(req, res, m) {
 			} else if (err && 'BadDataError' === err.type) {
 				result = 'sorry, there is a problem with the user account for ' + post['email'];
 			} else {
-				result = '' + post['email'] + ' found!';
+				result = '' + post['email'] + ' found! \n ' + userToken;
 			}
-			console.log(result,userInfo); // debugging
+			console.log(result,userToken); // debugging
 		    // // eventually, redirect now-logged-in user:
 			// res.writeHead(302, {
 			//   'Location': '/'

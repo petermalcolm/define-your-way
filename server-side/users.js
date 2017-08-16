@@ -1,4 +1,3 @@
-const md5 = require('md5');
 try {
     var salt = require('../_salt.js');
 } catch (e) {
@@ -13,6 +12,9 @@ try {
         process.exit();
     }
 }
+const md5 = require('md5');
+// and JWTs
+const jwt = require('jsonwebtoken');
 
 const Users = function(db) {
 	const create = function(userInfo,callback) {
@@ -46,9 +48,22 @@ const Users = function(db) {
 				bad.type = 'BadPasswordError';
 				return callback(bad,null);
 			}
-			return callback(null,data);
+			return callback(null,tokenFor(data));
 		});
 	};
+
+	// private fn
+	const tokenFor = function( userData ){
+		const data = {
+			email: JSON.parse(userData).email,
+			name: JSON.parse(userData).name,
+			permissions: 'play'
+		};
+		return jwt.sign({
+		  data: data
+		}, salt, { expiresIn: 86400 }); // one day
+	}
+
 	// interface
 	var _handle = {
 		create,
