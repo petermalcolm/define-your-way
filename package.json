@@ -28,6 +28,7 @@
     "axios": "^0.15.3",
     "ecstatic": "^2.1.0",
     "http-server": "^0.9.0",
+    "jsonwebtoken": "^7.4.2",
     "level": "^1.6.0",
     "md5": "^2.2.1",
     "ramda": "^0.24.1",
