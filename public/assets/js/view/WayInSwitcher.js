@@ -1,13 +1,14 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 const WayIn = require('./WayIn');
+const YourName = require('./YourName');
 
 const RcE = React.createElement;
 
 const WayInSwitcher = React.createClass({
 	getInitialState: function() {
 		return { kindOfGame: 'neither',
-				 showing: false
+				 showing: document.cookie.indexOf('define-jwt') > -1
 				};
 	},
 	displayName: 'WayInSwitcher',
@@ -16,6 +17,7 @@ const WayInSwitcher = React.createClass({
 			return RcE('div',{}, 'Please sign in.' );
 		}
 		return RcE('div',{},
+			RcE(YourName),
 			RcE(WayIn, { 	id: 'defyw-new',
 							wayInKey : 'new',
 							showMessage : 'Create a New Game',

@@ -6,7 +6,7 @@ const RcE = React.createElement;
 const SignInSwitcher = React.createClass({
 	displayName: 'SignInSwitcher',
 	getInitialState: function() {
-		return { kindOfSignIn: 'login' };
+		return { kindOfSignIn: document.cookie.indexOf('define-jwt') > -1 ? 'loggedin' : 'login' };
 	},
 	render: function() {
 		return RcE('div',{},

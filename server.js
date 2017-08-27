@@ -50,13 +50,13 @@ staticRouter.addRoute('/login', function(req, res, m) {
 				result = '' + post['email'] + ' found! \n ' + userToken;
 			}
 			console.log(result,userToken); // debugging
-		    // // eventually, redirect now-logged-in user:
-			// res.writeHead(302, {
-			//   'Location': '/'
-			//   //add other headers here...
-			// });
-			// res.end();
-			res.end(result+'\n'); // debugging
+		    // eventually, redirect now-logged-in user:
+			res.writeHead(302, {
+			  'Location': '/',
+			  'Set-Cookie': 'define-jwt='+userToken
+			  //add other headers here...
+			});
+			res.end(); // debugging
 		});
 	});
 });

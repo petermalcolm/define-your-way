@@ -29036,7 +29036,7 @@ const RcE = React.createElement;
 const SignInSwitcher = React.createClass({
 	displayName: 'SignInSwitcher',
 	getInitialState: function() {
-		return { kindOfSignIn: 'login' };
+		return { kindOfSignIn: document.cookie.indexOf('define-jwt') > -1 ? 'loggedin' : 'login' };
 	},
 	render: function() {
 		return RcE('div',{},
@@ -29189,13 +29189,14 @@ module.exports = WayIn;
 const React = require('react');
 const ReactDOM = require('react-dom');
 const WayIn = require('./WayIn');
+const YourName = require('./YourName');
 
 const RcE = React.createElement;
 
 const WayInSwitcher = React.createClass({
 	getInitialState: function() {
 		return { kindOfGame: 'neither',
-				 showing: false
+				 showing: document.cookie.indexOf('define-jwt') > -1
 				};
 	},
 	displayName: 'WayInSwitcher',
@@ -29204,6 +29205,7 @@ const WayInSwitcher = React.createClass({
 			return RcE('div',{}, 'Please sign in.' );
 		}
 		return RcE('div',{},
+			RcE(YourName),
 			RcE(WayIn, { 	id: 'defyw-new',
 							wayInKey : 'new',
 							showMessage : 'Create a New Game',
@@ -29227,4 +29229,60 @@ const WayInSwitcher = React.createClass({
 
 module.exports = WayInSwitcher;
 
-},{"./WayIn":228,"react":224,"react-dom":44}]},{},[227]);
+},{"./WayIn":228,"./YourName":230,"react":224,"react-dom":44}],230:[function(require,module,exports){
+const React = require('react');
+const ReactDOM = require('react-dom');
+const RcE = React.createElement;
+
+const YourName = React.createClass({
+	displayName: 'YourName',
+	render: function() {
+		if(document.cookie.indexOf('define-jwt') > -1){
+			const userName = this.readMyName('define-jwt');
+			return RcE('div',{ className: 'defyw-your-name', key: 'defyw-your-name'} , 'Hi, ' + userName );
+		} else {
+			return RcE('div',{ className: 'defyw-your-name', key: 'defyw-your-name'} , '' );
+		}
+	},
+	readMyName: function(cookieName) {
+		const cookie = this.readCookie(cookieName);
+		const errMsg = 'there was an error identifying you...'
+		if( null===cookie ){
+			return errMsg;
+		}
+		const payload = cookie.split('.');
+		if( 3!==payload.length ) {
+			return errMsg;
+		} 
+		const payDecode = this.base64Decode(payload[1]);
+		var payParsed = {};
+		try {
+	        payParsed = JSON.parse(payDecode);
+	    } catch(e) {
+			return errMsg;
+	    }
+	    if( !payParsed.data || !payParsed.data.name ) {
+	    	return errMsg;
+	    } else {
+			return payParsed.data.name;
+		}
+	},
+	base64Decode: function(str) {
+	    return decodeURIComponent(atob(str).split('').map(function(c) {
+	        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+	    }).join(''));
+	},
+	readCookie: function(name) {
+		const nameEQ = name + "=";
+		const ca = document.cookie.split(';');
+		for(var i=0;i < ca.length;i++) {
+			var c = ca[i];
+			while (c.charAt(0)==' ') c = c.substring(1,c.length);
+			if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+		}
+		return null;
+	}
+});
+
+module.exports = YourName;
+},{"react":224,"react-dom":44}]},{},[227]);
