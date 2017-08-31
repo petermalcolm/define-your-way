@@ -43,6 +43,7 @@ And here is the data structure for a user:
 {
 	"name": "Example Person",
 	"email": "person@example.com",
-	"password": "hashOfPassword"
+	"password": "hashOfPassword",
+	"permissions": "play" | "admin"
 }
 ```

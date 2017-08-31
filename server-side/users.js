@@ -21,6 +21,7 @@ const Users = function(db) {
 		db.get(userInfo.email,function(err,data) {
 			if( null !== err ) {
 				userInfo.password = md5(userInfo.password + salt);
+				userInfo.permissions = "play"; // default
 				db.put(userInfo.email,JSON.stringify(userInfo),function(err) {
 					return callback(err);
 				});	
@@ -57,7 +58,7 @@ const Users = function(db) {
 		const data = {
 			email: JSON.parse(userData).email,
 			name: JSON.parse(userData).name,
-			permissions: 'play'
+			permissions: JSON.parse(userData).permissions
 		};
 		return jwt.sign({
 		  data: data
