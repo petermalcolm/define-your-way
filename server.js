@@ -76,15 +76,17 @@ staticRouter.addRoute('/signup', function(req, res, m) {
 				result = 'An account already exists for ' + post['email'];
 			} else {
 			    result = '' + post['email'] + ' created!';
+			    users.authenticate(post['email'],post['password'],function(err2,userToken){
+					console.log(result); // debugging
+			        // eventually, redirect now-logged-in user:
+					res.writeHead(302, {
+					  'Location': '/',
+					  'Set-Cookie': 'define-jwt='+userToken
+					  //add other headers here...
+					});
+					res.end();	
+			    });
 			}
-			console.log(result); // debugging
-	        // // eventually, redirect now-logged-in user:
-			// res.writeHead(302, {
-			//   'Location': '/'
-			//   //add other headers here...
-			// });
-			// res.end();
-			res.end(result+'\n'); // debugging
         });
     });
 });
