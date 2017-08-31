@@ -66,19 +66,8 @@ staticRouter.addRoute('/signup', function(req, res, m) {
 		redirect(res,'/',[]);
 		return;
 	}
-    var body = '';
-
-    req.on('data', function (data) {
-        body += data;
-
-        // Too much POST data, kill the connection!
-        // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
-        if (body.length > 1e6)
-            req.connection.destroy();
-    });
-
-    req.on('end', function () {
-        var post = qs.parse(body);
+	parsePost_then( req, function(body) {
+		var post = qs.parse(body);
         users.create({	name : post['name'],
         				email : post['email'],
         				password : post['password'],},function(err,id){
