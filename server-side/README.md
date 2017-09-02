@@ -5,34 +5,34 @@ Here is the underlying data JSON data structure for a Define Your Way game:
 ```
 {
 	"name": "sample-game",
-	"players": ["player0", "player1", "player2"],
+	"players": ["player0@example.com", "player1@example.com", "player2@example.com"],
 	"turns": [{
 		"word": "bereft",
 		"definitions": [{
-			"owner": "player0",
+			"owner": "player0@example.com",
 			"definition": "deprived of or lacking something",
 			"fromDictionary": true
 		}, {
-			"owner": "player1",
+			"owner": "player1@example.com",
 			"definition": "being somewhere between 'left' and 'right'",
 			"fromDictionary": false
 		}, {
-			"owner": "player2",
+			"owner": "player2@example.com",
 			"definition": "brief",
 			"fromDictionary": false
 		}],
 		"votes": [{
-			"owner": "player0",
-			"creative": "player1",
-			"accurate": "player2"
+			"owner": "player0@example.com",
+			"creative": "player1@example.com",
+			"accurate": "player2@example.com"
 		}, {
-			"owner": "player1",
-			"creative": "player2",
-			"accurate": "player0"
+			"owner": "player1@example.com",
+			"creative": "player2@example.com",
+			"accurate": "player0@example.com"
 		}, {
-			"owner": "player2",
-			"creative": "player0",
-			"accurate": "player1"
+			"owner": "player2@example.com",
+			"creative": "player0@example.com",
+			"accurate": "player1@example.com"
 		}]
 	}]
 }
