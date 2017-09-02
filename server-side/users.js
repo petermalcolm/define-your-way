@@ -17,12 +17,14 @@ const md5 = require('md5');
 const jwt = require('jsonwebtoken');
 
 const Users = function(db) {
+	const that = this;
+	this.dbPrefix = 'user-';
 	const create = function(userInfo,callback) {
-		db.get(userInfo.email,function(err,data) {
+		db.get(that.dbPrefix+userInfo.email,function(err,data) {
 			if( null !== err ) {
 				userInfo.password = md5(userInfo.password + salt);
 				userInfo.permissions = "play"; // default
-				db.put(userInfo.email,JSON.stringify(userInfo),function(err) {
+				db.put(that.dbPrefix+userInfo.email,JSON.stringify(userInfo),function(err) {
 					return callback(err);
 				});	
 			} else {
@@ -34,7 +36,7 @@ const Users = function(db) {
 	};
 
 	const authenticate = function(email,password,callback) {
-		db.get(email,function(err,data) {
+		db.get(that.dbPrefix+email,function(err,data) {
 			if( null !== err ) {
 				return callback(err,null); // NotFoundError
 			}
@@ -56,7 +58,7 @@ const Users = function(db) {
 	// private fn
 	const tokenFor = function( userData ){
 		const data = {
-			email: JSON.parse(userData).email,
+			email: JSON.parse(userData).email.slice(that.dbPrefix.length),
 			name: JSON.parse(userData).name,
 			avatar: JSON.parse(userData).avatar,
 			permissions: JSON.parse(userData).permissions
