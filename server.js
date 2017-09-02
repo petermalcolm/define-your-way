@@ -18,16 +18,19 @@ const pick = require('./server-side/pick-word.js');
 const definition = require('./server-side/define-word.js');
 const userlib = require('./server-side/users.js');
 const users = new userlib(db);
+const gamelib = require('./server-side/games.js');
+const games = new gamelib(db);
 
 //// STATIC FILES on 5000 ////
-// define endpoint: /game/:id
-staticRouter.addRoute('/game/:id/*', function(req, res, m) {
+// define endpoint: /game/:name
+staticRouter.addRoute('/game/:name/*', function(req, res, m) {
 	if( !m.splats.length || JSON.stringify(m.splats) === JSON.stringify(['']) ) {
+		joinGame( m.params.name, readReqCookie(req,'define-jwt') );
 		req.url = "/game.html";		
 	} else {
 		req.url = "/assets/" + m.splats[0];
+		st(req,res);
 	}
-	st(req,res);
 });
 // endpoint: /login for POST submissions
 staticRouter.addRoute('/login', function(req, res, m) {
@@ -136,6 +139,25 @@ const parsePost_then = function( req, do_callback ) {
     req.on('end', function() { 
     	do_callback(body) 
     });
+}
+
+const readReqCookie = function(req, name) {
+	const nameEQ = name + "=";
+	const ca = req.headers.cookie.split(';');
+	for(var i=0;i < ca.length;i++) {
+		var c = ca[i];
+		while (c.charAt(0)==' ') c = c.substring(1,c.length);
+		if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+	}
+	return null;
+}
+
+
+const joinGame = function( gameName, userToken ) {
+	// todo: validate, decode userToken
+	games.join( gameName, decodedUserToken, function() {
+		// do stuff
+	});
 }
 
 //// API on 5411 ////
