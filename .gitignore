@@ -41,6 +41,7 @@ initializr-verekia-4.0.zip
 
 # The database
 define-db/
+help/
 
 # The salt
 _salt.js
