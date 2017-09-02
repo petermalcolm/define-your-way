@@ -6,13 +6,17 @@ const YourName = React.createClass({
 	displayName: 'YourName',
 	render: function() {
 		if(document.cookie.indexOf('define-jwt') > -1){
-			const userName = this.readMyName('define-jwt');
-			return RcE('div',{ className: 'defyw-your-name', key: 'defyw-your-name'} , 'Hi, ' + userName );
+			const userName = this.readMyField('define-jwt','name');
+			const userAvatar = this.readMyField('define-jwt','avatar');
+			return RcE('div',{className:'defyw-your-user',className:'defyw-your-user'},
+				RcE('div',{ className: 'defyw-your-name', key: 'defyw-your-name'} , 'Hi, ' + userName ),
+				RcE('img',{ className: 'defyw-your-avatar', key: 'defyw-your-avatar', src: userAvatar }  )
+				);
 		} else {
 			return RcE('div',{ className: 'defyw-your-name', key: 'defyw-your-name'} , '' );
 		}
 	},
-	readMyName: function(cookieName) {
+	readMyField: function(cookieName,fieldName) {
 		const cookie = this.readCookie(cookieName);
 		const errMsg = 'there was an error identifying you...'
 		if( null===cookie ){
@@ -29,10 +33,10 @@ const YourName = React.createClass({
 	    } catch(e) {
 			return errMsg;
 	    }
-	    if( !payParsed.data || !payParsed.data.name ) {
+	    if( !payParsed.data || !payParsed.data[fieldName] ) {
 	    	return errMsg;
 	    } else {
-			return payParsed.data.name;
+			return payParsed.data[fieldName];
 		}
 	},
 	base64Decode: function(str) {

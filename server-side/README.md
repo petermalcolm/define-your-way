@@ -44,6 +44,7 @@ And here is the data structure for a user:
 	"name": "Example Person",
 	"email": "person@example.com",
 	"password": "hashOfPassword",
+	"avatar" : "https://example.com/avatar.png"
 	"permissions": "play" | "admin"
 }
 ```

@@ -38,6 +38,8 @@ const SignInSwitcher = React.createClass({
 				RcE('input',{name:'email'}),
 				RcE('label',{},'Name'),
 				RcE('input',{name:'name'}),
+				RcE('label',{},'Avatar Picture'),
+				RcE('input',{name:'avatar'}),
 				RcE('label',{},'Password'),
 				RcE('input',{	type:'password',
 								name:'password'}),

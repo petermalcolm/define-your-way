@@ -58,6 +58,7 @@ const Users = function(db) {
 		const data = {
 			email: JSON.parse(userData).email,
 			name: JSON.parse(userData).name,
+			avatar: JSON.parse(userData).avatar,
 			permissions: JSON.parse(userData).permissions
 		};
 		return jwt.sign({

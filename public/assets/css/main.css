@@ -55,6 +55,11 @@ textarea {
 /* ==========================================================================
    Author's custom styles
    ========================================================================== */
+.defyw-your-avatar {
+    width: 50px;
+    border-radius: 50%;
+    padding: 3px 10px;
+}
 
 .defyw-def-suggestions, .defyw-def-details {
     list-style-type: none;

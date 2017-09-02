@@ -70,7 +70,8 @@ staticRouter.addRoute('/signup', function(req, res, m) {
 		var post = qs.parse(body);
         users.create({	name : post['name'],
         				email : post['email'],
-        				password : post['password'],},function(err,id){
+        				password : post['password'],
+        				avatar : post['avatar']},function(err,id){
         	var result;
 			if(err) {
 				result = 'An account already exists for ' + post['email'];
