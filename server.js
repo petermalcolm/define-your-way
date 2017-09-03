@@ -25,8 +25,12 @@ const games = new gamelib(db);
 // define endpoint: /game/:name
 staticRouter.addRoute('/game/:name/*', function(req, res, m) {
 	if( !m.splats.length || JSON.stringify(m.splats) === JSON.stringify(['']) ) {
-		joinGame( m.params.name, readReqCookie(req,'define-jwt') );
-		req.url = "/game.html";		
+		const joined = joinGame( m.params.name, readReqCookie(req,'define-jwt') );
+		if(joined instanceof Error ){
+			res.end('Sorry, you have been signed out.');
+		}
+		req.url = "/game.html";
+		st(req,res);
 	} else {
 		req.url = "/assets/" + m.splats[0];
 		st(req,res);
@@ -39,7 +43,7 @@ staticRouter.addRoute('/login', function(req, res, m) {
 		redirect(res,'/',[]);
 		return;
 	}
-	parsePost_then( req, function(body) {
+	parsePost(req).then( function(body) {
 		var post = qs.parse(body);
 		users.authenticate(post['email'],post['password'],function(err,userToken){
 			var result;
@@ -69,7 +73,7 @@ staticRouter.addRoute('/signup', function(req, res, m) {
 		redirect(res,'/',[]);
 		return;
 	}
-	parsePost_then( req, function(body) {
+	parsePost(req).then(function(body) {
 		var post = qs.parse(body);
         users.create({	name : post['name'],
         				email : post['email'],
@@ -125,21 +129,42 @@ const redirect = function(res, to, headers) {
 	res.end();
 }
 
-const parsePost_then = function( req, do_callback ) {
-    var body = '';
-    req.on('data', function (data) {
-        body += data;
+// the Promise way
+const parsePost = function(req) {
+	return new Promise(function(resolve, reject) {
+		var body = '';
+		req.on('data', function (data) {
+		    body += data;
 
-        // Too much POST data, kill the connection!
-        // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
-        if (body.length > 1e6)
-            req.connection.destroy();
-    });
-    // console.log(body); // debugging
-    req.on('end', function() { 
-    	do_callback(body) 
-    });
+		    // Too much POST data, kill the connection!
+		    // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
+		    if (body.length > 1e6) {
+		        req.connection.destroy();
+		        reject(Error('Too much data'));
+		    }
+		});
+		req.on('end', function() { 
+			resolve(body) 
+		});
+	});
 }
+
+// the pseudo-promise way
+// const parsePost_then = function( req, do_callback ) {
+//     var body = '';
+//     req.on('data', function (data) {
+//         body += data;
+
+//         // Too much POST data, kill the connection!
+//         // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
+//         if (body.length > 1e6)
+//             req.connection.destroy();
+//     });
+//     // console.log(body); // debugging
+//     req.on('end', function() { 
+//     	do_callback(body) 
+//     });
+// }
 
 const readReqCookie = function(req, name) {
 	const nameEQ = name + "=";
@@ -154,9 +179,13 @@ const readReqCookie = function(req, name) {
 
 
 const joinGame = function( gameName, userToken ) {
-	// todo: validate, decode userToken
+	const decodedUserToken = users.validateToken(userToken);
+	if(decodedUserToken instanceof Error) {
+		console.log(decodedUserToken.message);
+		return decodedUserToken;
+	}
 	games.join( gameName, decodedUserToken, function() {
-		// do stuff
+		console.log('Successfully joined game',gameName+'!');
 	});
 }
 

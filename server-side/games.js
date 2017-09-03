@@ -1,11 +1,8 @@
-// JWTs
-const jwt = require('jsonwebtoken');
-
 const Games = function(db) {
 	const that = this;
 	this.dbPrefix = 'game-';
 	const create = function(gameInfo,callback) {
-		gameInfo.name = gameInfo.name.replace(/[^\w-]/g,''); // can't sanitize too much
+		gameInfo.name = gameInfo.name.replace(/[^\w-]/g,''); // can never sanitize too much
 		db.get(that.dbPrefix+gameInfo.name,function(err,data) {
 			if( null !== err ) {
 				// TODO: actual data structure here
@@ -29,7 +26,7 @@ const Games = function(db) {
 			try {
 			    dataParsed = JSON.parse(data);
 			} catch(e) {
-				const = new Error('Aaak! Programmer error.');
+				const aaak = new Error('Aaak! Programmer error.');
 				aaak.type = 'BadDataError';
 				return callback(aaak,data);
 			}
@@ -44,6 +41,12 @@ const Games = function(db) {
 			return callback(null,gameName);
 		});
 	};
+	// interface
+	var _handle = {
+		create,
+		join,
+	}
+	return _handle;
 
 }
 

@@ -55,6 +55,14 @@ const Users = function(db) {
 		});
 	};
 
+	const validateToken = function( givenToken ) {
+		try {
+		  return jwt.verify(givenToken, salt);
+		} catch(err) {
+		  return(Error('Bad token.'));
+		}
+	}
+
 	// private fn
 	const tokenFor = function( userData ){
 		const data = {
@@ -71,7 +79,8 @@ const Users = function(db) {
 	// interface
 	var _handle = {
 		create,
-		authenticate
+		authenticate,
+		validateToken
 	}
 	return _handle;
 

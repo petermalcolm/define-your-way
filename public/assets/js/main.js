@@ -40000,6 +40000,7 @@ module.exports = DefineWord;
 },{"./DefineDefinition":544,"ajax-request":41,"react":542,"react-dom":362}],547:[function(require,module,exports){
 const React = require('react');
 const ReactDOM = require('react-dom');
+const YourName = require('./YourName');
 const YourGame = require('./YourGame');
 const YourGrid = require('./YourGrid');
 const DefineWord = require('./DefineWord');
@@ -40011,13 +40012,14 @@ ReactDOM.render(
 	RcE('div', { id: 'defyw' }, 
 		RcE('h3', { id: 'defyw-title' }, 'Define Your Way'),
 		RcE('div', { id: 'defyw-intro'}, 'Introductory info here ... ' ),
+		RcE(YourName, {} ),
 		RcE(YourGame, {} ),
 		RcE(YourGrid, {} ),
 		RcE(DefineWord, {} ) 
 	),
 	dgetID('root')
 );
-},{"./DefineWord":546,"./YourGame":548,"./YourGrid":549,"react":542,"react-dom":362}],548:[function(require,module,exports){
+},{"./DefineWord":546,"./YourGame":548,"./YourGrid":549,"./YourName":550,"react":542,"react-dom":362}],548:[function(require,module,exports){
 const React = require('react');
 const ReactDOM = require('react-dom');
 const RcE = React.createElement;
@@ -40056,4 +40058,64 @@ const YourGrid = React.createClass({
 });
 
 module.exports = YourGrid;
+},{"react":542,"react-dom":362}],550:[function(require,module,exports){
+const React = require('react');
+const ReactDOM = require('react-dom');
+const RcE = React.createElement;
+
+const YourName = React.createClass({
+	displayName: 'YourName',
+	render: function() {
+		if(document.cookie.indexOf('define-jwt') > -1){
+			const userName = this.readMyField('define-jwt','name');
+			const userAvatar = this.readMyField('define-jwt','avatar');
+			return RcE('div',{className:'defyw-your-user',className:'defyw-your-user'},
+				RcE('div',{ className: 'defyw-your-name', key: 'defyw-your-name'} , 'Hi, ' + userName ),
+				RcE('img',{ className: 'defyw-your-avatar', key: 'defyw-your-avatar', src: userAvatar }  )
+				);
+		} else {
+			return RcE('div',{ className: 'defyw-your-name', key: 'defyw-your-name'} , '' );
+		}
+	},
+	readMyField: function(cookieName,fieldName) {
+		const cookie = this.readCookie(cookieName);
+		const errMsg = 'there was an error identifying you...'
+		if( null===cookie ){
+			return errMsg;
+		}
+		const payload = cookie.split('.');
+		if( 3!==payload.length ) {
+			return errMsg;
+		} 
+		const payDecode = this.base64Decode(payload[1]);
+		var payParsed = {};
+		try {
+	        payParsed = JSON.parse(payDecode);
+	    } catch(e) {
+			return errMsg;
+	    }
+	    if( !payParsed.data || !payParsed.data[fieldName] ) {
+	    	return errMsg;
+	    } else {
+			return payParsed.data[fieldName];
+		}
+	},
+	base64Decode: function(str) {
+	    return decodeURIComponent(atob(str).split('').map(function(c) {
+	        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+	    }).join(''));
+	},
+	readCookie: function(name) {
+		const nameEQ = name + "=";
+		const ca = document.cookie.split(';');
+		for(var i=0;i < ca.length;i++) {
+			var c = ca[i];
+			while (c.charAt(0)==' ') c = c.substring(1,c.length);
+			if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+		}
+		return null;
+	}
+});
+
+module.exports = YourName;
 },{"react":542,"react-dom":362}]},{},[547]);

@@ -1,5 +1,6 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
+const YourName = require('./YourName');
 const YourGame = require('./YourGame');
 const YourGrid = require('./YourGrid');
 const DefineWord = require('./DefineWord');
@@ -11,6 +12,7 @@ ReactDOM.render(
 	RcE('div', { id: 'defyw' }, 
 		RcE('h3', { id: 'defyw-title' }, 'Define Your Way'),
 		RcE('div', { id: 'defyw-intro'}, 'Introductory info here ... ' ),
+		RcE(YourName, {} ),
 		RcE(YourGame, {} ),
 		RcE(YourGrid, {} ),
 		RcE(DefineWord, {} ) 
