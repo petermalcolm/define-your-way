@@ -28,9 +28,10 @@ staticRouter.addRoute('/game/:name/*', function(req, res, m) {
 		const joined = joinGame( m.params.name, readReqCookie(req,'define-jwt') );
 		if(joined instanceof Error ){
 			res.end('Sorry, you have been signed out.');
+		} else {
+			req.url = "/game.html";
+			st(req,res);
 		}
-		req.url = "/game.html";
-		st(req,res);
 	} else {
 		req.url = "/assets/" + m.splats[0];
 		st(req,res);
@@ -168,8 +169,8 @@ const parsePost = function(req) {
 
 const readReqCookie = function(req, name) {
 	const nameEQ = name + "=";
-	const ca = req.headers.cookie.split(';');
-	for(var i=0;i < ca.length;i++) {
+	const ca = req.headers.cookie && req.headers.cookie.split(';');
+	for(var i=0;ca && i < ca.length;i++) {
 		var c = ca[i];
 		while (c.charAt(0)==' ') c = c.substring(1,c.length);
 		if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
