@@ -130,13 +130,12 @@ const redirect = function(res, to, headers) {
 	res.end();
 }
 
-// the Promise way
+// parse a post request
 const parsePost = function(req) {
 	return new Promise(function(resolve, reject) {
 		var body = '';
 		req.on('data', function (data) {
 		    body += data;
-
 		    // Too much POST data, kill the connection!
 		    // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
 		    if (body.length > 1e6) {
@@ -149,23 +148,6 @@ const parsePost = function(req) {
 		});
 	});
 }
-
-// the pseudo-promise way
-// const parsePost_then = function( req, do_callback ) {
-//     var body = '';
-//     req.on('data', function (data) {
-//         body += data;
-
-//         // Too much POST data, kill the connection!
-//         // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
-//         if (body.length > 1e6)
-//             req.connection.destroy();
-//     });
-//     // console.log(body); // debugging
-//     req.on('end', function() { 
-//     	do_callback(body) 
-//     });
-// }
 
 const readReqCookie = function(req, name) {
 	const nameEQ = name + "=";
