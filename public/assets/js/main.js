@@ -40071,7 +40071,8 @@ const YourName = React.createClass({
 			const userAvatar = this.readMyField('define-jwt','avatar');
 			return RcE('div',{className:'defyw-your-user',className:'defyw-your-user'},
 				RcE('div',{ className: 'defyw-your-name', key: 'defyw-your-name'} , 'Hi, ' + userName ),
-				RcE('img',{ className: 'defyw-your-avatar', key: 'defyw-your-avatar', src: userAvatar }  )
+				RcE('img',{ className: 'defyw-your-avatar', key: 'defyw-your-avatar', src: userAvatar } ),
+				RcE('button',{ className: 'defyw-sign-out', className: 'defyw-sign-out', onClick: this.userSignsOut}, 'Sign Out' )
 				);
 		} else {
 			return RcE('div',{ className: 'defyw-your-name', key: 'defyw-your-name'} , '' );
@@ -40114,6 +40115,10 @@ const YourName = React.createClass({
 			if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
 		}
 		return null;
+	},
+	userSignsOut: function(e) {
+		document.cookie = 'define-jwt=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+		window.location.href = '/';
 	}
 });
 
