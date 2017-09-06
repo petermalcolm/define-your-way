@@ -17,30 +17,27 @@ const Games = function(db) {
 		});
 	};
 
-	const join = function(gameName,userInfo,callback) {
-		db.get(that.dbPrefix+gameName,function(err,data) {
-			if( null !== err ) {
-				return callback(err,null); // NotFoundError
-			}
-			var dataParsed = {};
-			try {
-			    dataParsed = JSON.parse(data);
-			} catch(e) {
-				const aaak = new Error('Aaak! Programmer error.');
-				aaak.type = 'BadDataError';
-				return callback(aaak,data);
-			}
+	// join a game
+	// return a Promise
+	const join = function(gameName,userInfo) {
+		console.log('Joining',gameName,'...');
+		db.get(that.dbPrefix+gameName).then(JSON.parse).then(
+		function gameExists( dataParsed ) {
 			if( dataParsed.turns.length > 0 ) { // game is underway
 				if( -1 === dataParsed.players.indexOf(userInfo.email) ) {
-					var sad = new Error('Sorry. :-( This game is already underway without ' + userInfo.name);
-					sad.type = 'SadNewsError';
-					return callback(sad,null);					
+					var sadErr = new Error('Sorry. :-( This game is already underway without ' + userInfo.name);
+					sadErr.type = 'SadNewsError';
+					throw sadErr;					
 				}
 			}
 			// TODO: modify game so that this user becomes a player
-			return callback(null,gameName);
+			return gameName;
+		}).catch(function gameJoinFail( err ){
+			console.log( 'FAILED WITH:',err.message );
+			return err;
 		});
 	};
+
 	// interface
 	var _handle = {
 		create,

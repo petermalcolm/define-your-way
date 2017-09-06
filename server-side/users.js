@@ -56,11 +56,13 @@ const Users = function(db) {
 	};
 
 	const validateToken = function( givenToken ) {
-		try {
-		  return jwt.verify(givenToken, salt);
-		} catch(err) {
-		  return(Error('Bad token.'));
-		}
+		return new Promise(function(resolve, reject) {
+			try {
+				resolve(jwt.verify(givenToken, salt));
+			} catch(err) {
+				reject(Error('Bad token.'));
+			}			
+		});
 	}
 
 	// private fn

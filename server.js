@@ -8,6 +8,9 @@ const st = ecstatic({ root: __dirname + '/public', handleError: false })
 const levelup = require('level');
 const db = levelup('./define-db');
 
+db.del('zzz-foo');
+
+
 // and simple little endpoints using routes
 const Router = require('routes');
 const staticRouter = Router();
@@ -25,13 +28,15 @@ const games = new gamelib(db);
 // define endpoint: /game/:name
 staticRouter.addRoute('/game/:name/*', function(req, res, m) {
 	if( !m.splats.length || JSON.stringify(m.splats) === JSON.stringify(['']) ) {
-		const joined = joinGame( m.params.name, readReqCookie(req,'define-jwt') );
-		if(joined instanceof Error ){
-			res.end('Sorry, you have been signed out.');
-		} else {
+		joinGame( m.params.name, readReqCookie(req,'define-jwt') ).then(
+		function youreIn( token ) {
+			console.log( 'User made it into the game.' );
 			req.url = "/game.html";
 			st(req,res);
-		}
+		},
+		function youreOut( error ) {
+			res.end('You are signed out of Define Your Way.');
+		});
 	} else {
 		req.url = "/assets/" + m.splats[0];
 		st(req,res);
@@ -131,6 +136,7 @@ const redirect = function(res, to, headers) {
 }
 
 // parse a post request
+// return a Promise
 const parsePost = function(req) {
 	return new Promise(function(resolve, reject) {
 		var body = '';
@@ -160,15 +166,15 @@ const readReqCookie = function(req, name) {
 	return null;
 }
 
-
+// join a game
+// return a Promise
 const joinGame = function( gameName, userToken ) {
-	const decodedUserToken = users.validateToken(userToken);
-	if(decodedUserToken instanceof Error) {
-		console.log(decodedUserToken.message);
-		return decodedUserToken;
-	}
-	games.join( gameName, decodedUserToken, function() {
-		console.log('Successfully joined game',gameName+'!');
+	return Promise.resolve(users.validateToken( userToken )).then(
+	function tokenWorked( token ){
+		return games.join( gameName, token );
+	}).catch(function somethingFailed( err ){
+		console.log( err.message );
+		return err;
 	});
 }
 
