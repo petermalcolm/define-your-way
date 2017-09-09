@@ -6,10 +6,13 @@ const st = ecstatic({ root: __dirname + '/public', handleError: false })
 
 // and a db for users, games and cached API responses
 const levelup = require('level');
-const db = levelup('./define-db');
+const dbNoPromise = levelup('./define-db');
 
-db.del('zzz-foo');
-
+// and some node magic for making Promises:
+const {promisify} = require('util');
+const db = { get : promisify(dbNoPromise.get),
+			 put : promisify(dbNoPromise.put),
+			 del : promisify(dbNoPromise.del) }
 
 // and simple little endpoints using routes
 const Router = require('routes');

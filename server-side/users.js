@@ -20,39 +20,27 @@ const Users = function(db) {
 	const that = this;
 	this.dbPrefix = 'user-';
 	const create = function(userInfo,callback) {
-		db.get(that.dbPrefix+userInfo.email,function(err,data) {
-			if( null !== err ) {
-				userInfo.password = md5(userInfo.password + salt);
-				userInfo.permissions = "play"; // default
-				db.put(that.dbPrefix+userInfo.email,JSON.stringify(userInfo),function(err) {
-					return callback(err);
-				});	
-			} else {
-				var alreadyThere = new Error('User already exists');
-				alreadyThere.type = 'UserExistsError';
-				return callback(alreadyThere);
-			}
-		});
+		db.get(that.dbPrefix+userInfo.email).then(function itsADuplicate(data) {
+			var alreadyThere = new Error('User already exists');
+			alreadyThere.type = 'UserExistsError';
+			return alreadyThere;			
+		}).catch(function itsOriginal(err) {  // counterintuitive - catch means success 
+			userInfo.password = md5(userInfo.password + salt);
+			userInfo.permissions = "play"; // default
+			return db.put(that.dbPrefix+userInfo.email,JSON.stringify(userInfo));	
+		}).then(callback);
 	};
 
 	const authenticate = function(email,password,callback) {
-		db.get(that.dbPrefix+email,function(err,data) {
-			if( null !== err ) {
-				return callback(err,null); // NotFoundError
-			}
-			if( !JSON.parse(data).password ) {
-				var aaak = new Error('Aaak! Programmer error.');
-				aaak.type = 'BadDataError';
-				return callback(aaak,data);
-			}
+		db.get(that.dbPrefix+email).then(JSON.parse)
+		.then( function checkHash(data) {
 			const givenHash = md5(password + salt);
-			if( givenHash !== JSON.parse(data).password ) {
+			if( givenHash !== data.password ) {
 				var bad = new Error('Please try again.');
 				bad.type = 'BadPasswordError';
-				return callback(bad,null);
+				throw bad;
 			}
-			return callback(null,tokenFor(data));
-		});
+		}).then(tokenFor).then(callback);
 	};
 
 	const validateToken = function( givenToken ) {
@@ -68,10 +56,10 @@ const Users = function(db) {
 	// private fn
 	const tokenFor = function( userData ){
 		const data = {
-			email: JSON.parse(userData).email.slice(that.dbPrefix.length),
-			name: JSON.parse(userData).name,
-			avatar: JSON.parse(userData).avatar,
-			permissions: JSON.parse(userData).permissions
+			email: userData.email.slice(that.dbPrefix.length),
+			name: userData.name,
+			avatar: userData.avatar,
+			permissions: userData.permissions
 		};
 		return jwt.sign({
 		  data: data
