@@ -11,8 +11,28 @@ const dbNoPromise = levelup('./define-db');
 // and some node magic for making Promises:
 const {promisify} = require('util');
 const db = { get : promisify(dbNoPromise.get),
+			 _isOpening : dbNoPromise._isOpening,
+			 isOpen : dbNoPromise.isOpen,
 			 put : promisify(dbNoPromise.put),
-			 del : promisify(dbNoPromise.del) }
+			 del : promisify(dbNoPromise.del) };
+
+console.log(db.get);
+
+db.get('define-enucleate',[])
+.then(function gotIt(def){
+	console.log(def) })
+.catch(function darnIt(err){
+	console.log('darn it,',err);
+});
+
+dbNoPromise.get('define-enucleate',function(err,def){
+	if(err) {
+		console.log('no promise failed')
+	} else {
+		console.log('no promise:',def);
+	}
+
+});
 
 // and simple little endpoints using routes
 const Router = require('routes');
