@@ -53,18 +53,13 @@ staticRouter.addRoute('/login', function(req, res, m) {
 		return;
 	}
 	parsePost(req)
-	.then( function foundThem(body) {
+	.then( function findThem(body) {
 		var post = qs.parse(body);
 		return users.authenticate(post['email'],post['password']);
 	})
 	.then( function redirectThem(userToken){
 		console.log('Here is the user\'s token:',userToken); // debugging
-		res.writeHead(302, {
-		  'Location': '/',
-		  'Set-Cookie': 'define-jwt='+userToken
-		  //add other headers here...
-		});
-		res.end();
+		redirect(res,'/',{'Set-Cookie':'define-jwt='+userToken});
 	})
 	.catch( function logInFailed(err) {
 		console.log('Log-In Failed:',err);
