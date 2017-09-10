@@ -31,8 +31,8 @@ const games = new gamelib(db);
 // define endpoint: /game/:name
 staticRouter.addRoute('/game/:name/*', function(req, res, m) {
 	if( !m.splats.length || JSON.stringify(m.splats) === JSON.stringify(['']) ) {
-		joinGame( m.params.name, readReqCookie(req,'define-jwt') ).then(
-		function youreIn( token ) {
+		joinGame( m.params.name, readReqCookie(req,'define-jwt') )
+		.then( function youreIn( token ) {
 			console.log( 'User made it into the game.' );
 			req.url = "/game.html";
 			st(req,res);
@@ -46,8 +46,7 @@ staticRouter.addRoute('/game/:name/*', function(req, res, m) {
 	}
 });
 // endpoint: /login for POST submissions
-staticRouter.addRoute('/login', function(req, res, m) {
-	// Thanks: https://stackoverflow.com/questions/4295782/how-do-you-extract-post-data-in-node-js
+staticRouter.addRoute('/login', function logIn(req, res, m) {
 	if('POST'!==req.method) {
 		redirect(res,'/',{});
 		return;
@@ -57,7 +56,7 @@ staticRouter.addRoute('/login', function(req, res, m) {
 		var post = qs.parse(body);
 		return users.authenticate(post['email'],post['password']);
 	})
-	.then( function redirectThem(userToken){
+	.then( function redirectThemAfterLogIn(userToken){
 		console.log('Here is the user\'s token:',userToken); // debugging
 		redirect(res,'/',{'Set-Cookie':'define-jwt='+userToken});
 	})
@@ -77,34 +76,34 @@ staticRouter.addRoute('/login', function(req, res, m) {
 	});
 });
 // endpoint: /signup for POST submissions
-staticRouter.addRoute('/signup', function(req, res, m) {
+staticRouter.addRoute('/signup', function signUp(req, res, m) {
 	if('POST'!==req.method) {
 		redirect(res,'/',{});
 		return;
 	}
-	parsePost(req).then(function(body) {
+	parsePost(req)
+	.then( function createThem(body) {
 		var post = qs.parse(body);
-        users.create({	name : post['name'],
-        				email : post['email'],
-        				password : post['password'],
-        				avatar : post['avatar']},function(err,id){
-        	var result;
-			if(err) {
-				result = 'An account already exists for ' + post['email'];
-			} else {
-			    result = '' + post['email'] + ' created!';
-			    users.authenticate(post['email'],post['password'],function(err2,userToken){
-					console.log(result); // debugging
-			        // eventually, redirect now-logged-in user:
-					res.writeHead(302, {
-					  'Location': '/',
-					  'Set-Cookie': 'define-jwt='+userToken
-					  //add other headers here...
-					});
-					res.end();	
-			    });
-			}
-        });
+		console.log(post['email'] + ' about to be created!'); // debugging
+        return users.create({	name : post['name'],
+								email : post['email'],
+								password : post['password'],
+								avatar : post['avatar']});
+    })
+    .then( function authenticateThem(id){
+		console.log(post['email'] + ' created!'); // debugging
+		return users.authenticate(post['email'],post['password']);
+	})
+	.then( function redirectThemAfterSignIn(userToken){
+		console.log('Here is the user\'s token:',userToken); // debugging
+		redirect(res,'/',{'Set-Cookie':'define-jwt='+userToken});
+    })
+    .catch(function signUpFailed(err) {
+		if(err) {
+			result = 'An account already exists for ' + post['email'];
+		}
+		console.log(err);
+		res.end(result); // debugging
     });
 });
 // root level: /
@@ -137,6 +136,7 @@ const redirect = function(res, to, headers) {
 }
 
 // parse a post request
+// Thanks: https://stackoverflow.com/questions/4295782/how-do-you-extract-post-data-in-node-js
 // return a Promise
 const parsePost = function(req) {
 	return new Promise(function(resolve, reject) {

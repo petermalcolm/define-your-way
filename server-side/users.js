@@ -20,15 +20,19 @@ const Users = function(db) {
 	const that = this;
 	this.dbPrefix = 'user-';
 	const create = function(userInfo,callback) {
-		db.get(that.dbPrefix+userInfo.email).then(function itsADuplicate(data) {
+		return db.get(that.dbPrefix+userInfo.email)
+		.then(function itsADuplicate(data) {
 			var alreadyThere = new Error('User already exists');
 			alreadyThere.type = 'UserExistsError';
-			return alreadyThere;			
+			throw alreadyThere;			
 		}).catch(function itsOriginal(err) {  // counterintuitive - catch means success 
 			userInfo.password = md5(userInfo.password + salt);
 			userInfo.permissions = "play"; // default
 			return db.put(that.dbPrefix+userInfo.email,JSON.stringify(userInfo));	
-		}).then(callback);
+		}).then(callback)
+		.catch(function creationSnafu(err){
+			console.log('User creation failed with',err);
+		});
 	};
 
 	const authenticate = function(email,password,callback) {
