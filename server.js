@@ -52,39 +52,39 @@ staticRouter.addRoute('/login', function(req, res, m) {
 		redirect(res,'/',{});
 		return;
 	}
-	parsePost(req).then( function(body) {
+	parsePost(req)
+	.then( function foundThem(body) {
 		var post = qs.parse(body);
 		return users.authenticate(post['email'],post['password']);
-		})
-		.then( function redirectThem(userToken){
-			console.log('Here is the user\'s token:',userToken); // debugging
-		    // eventually, redirect now-logged-in user:
-			res.writeHead(302, {
-			  'Location': '/',
-			  'Set-Cookie': 'define-jwt='+userToken
-			  //add other headers here...
-			});
-			res.end();
-		})
-		.catch( function logInFailed(err) {
-			console.log('Log-In Failed:',err);
-			var result;
-			if(err && 'NotFoundError' === err.type ) {
-				result = '' + post['email'] + ' not found';
-			} else if (err && 'BadPasswordError' === err.type) {
-				result = 'sorry, wrong password for ' + post['email'];
-			} else if (err && 'BadDataError' === err.type) {
-				result = 'sorry, there is a problem with the user account for ' + post['email'];
-			} else {
-				result = '' + post['email'] + ' found! \n ' + userToken;
-			}
-			res.end(result); // debugging
+	})
+	.then( function redirectThem(userToken){
+		console.log('Here is the user\'s token:',userToken); // debugging
+		res.writeHead(302, {
+		  'Location': '/',
+		  'Set-Cookie': 'define-jwt='+userToken
+		  //add other headers here...
 		});
+		res.end();
+	})
+	.catch( function logInFailed(err) {
+		console.log('Log-In Failed:',err);
+		var result;
+		if(err && 'NotFoundError' === err.type ) {
+			result = '' + post['email'] + ' not found';
+		} else if (err && 'BadPasswordError' === err.type) {
+			result = 'sorry, wrong password for ' + post['email'];
+		} else if (err && 'BadDataError' === err.type) {
+			result = 'sorry, there is a problem with the user account for ' + post['email'];
+		} else {
+			result = '' + post['email'] + ' found! \n ' + userToken;
+		}
+		res.end(result); // debugging
+	});
 });
 // endpoint: /signup for POST submissions
 staticRouter.addRoute('/signup', function(req, res, m) {
 	if('POST'!==req.method) {
-		redirect(res,'/',[]);
+		redirect(res,'/',{});
 		return;
 	}
 	parsePost(req).then(function(body) {
@@ -136,10 +136,8 @@ server.listen(5000);
 
 /// helpers for static ///
 const redirect = function(res, to, headers) {
-	res.writeHead(302, {
-	  'Location': to
-	  //add other headers here...
-	});
+	headers.Location = to;
+	res.writeHead(302, headers);
 	res.end();
 }
 
