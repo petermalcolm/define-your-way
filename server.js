@@ -10,29 +10,9 @@ const dbNoPromise = levelup('./define-db');
 
 // and some node magic for making Promises:
 const {promisify} = require('util');
-const db = { get : promisify(dbNoPromise.get),
-			 _isOpening : dbNoPromise._isOpening,
-			 isOpen : dbNoPromise.isOpen,
-			 put : promisify(dbNoPromise.put),
-			 del : promisify(dbNoPromise.del) };
-
-console.log(db.get);
-
-db.get('define-enucleate',[])
-.then(function gotIt(def){
-	console.log(def) })
-.catch(function darnIt(err){
-	console.log('darn it,',err);
-});
-
-dbNoPromise.get('define-enucleate',function(err,def){
-	if(err) {
-		console.log('no promise failed')
-	} else {
-		console.log('no promise:',def);
-	}
-
-});
+const db = { get : promisify(dbNoPromise.get.bind(dbNoPromise)),
+			 put : promisify(dbNoPromise.put.bind(dbNoPromise)),
+			 del : promisify(dbNoPromise.del.bind(dbNoPromise)) };
 
 // and simple little endpoints using routes
 const Router = require('routes');
@@ -69,12 +49,25 @@ staticRouter.addRoute('/game/:name/*', function(req, res, m) {
 staticRouter.addRoute('/login', function(req, res, m) {
 	// Thanks: https://stackoverflow.com/questions/4295782/how-do-you-extract-post-data-in-node-js
 	if('POST'!==req.method) {
-		redirect(res,'/',[]);
+		redirect(res,'/',{});
 		return;
 	}
 	parsePost(req).then( function(body) {
 		var post = qs.parse(body);
-		users.authenticate(post['email'],post['password'],function(err,userToken){
+		return users.authenticate(post['email'],post['password']);
+		})
+		.then( function redirectThem(userToken){
+			console.log('Here is the user\'s token:',userToken); // debugging
+		    // eventually, redirect now-logged-in user:
+			res.writeHead(302, {
+			  'Location': '/',
+			  'Set-Cookie': 'define-jwt='+userToken
+			  //add other headers here...
+			});
+			res.end();
+		})
+		.catch( function logInFailed(err) {
+			console.log('Log-In Failed:',err);
 			var result;
 			if(err && 'NotFoundError' === err.type ) {
 				result = '' + post['email'] + ' not found';
@@ -85,16 +78,8 @@ staticRouter.addRoute('/login', function(req, res, m) {
 			} else {
 				result = '' + post['email'] + ' found! \n ' + userToken;
 			}
-			console.log(result,userToken); // debugging
-		    // eventually, redirect now-logged-in user:
-			res.writeHead(302, {
-			  'Location': '/',
-			  'Set-Cookie': 'define-jwt='+userToken
-			  //add other headers here...
-			});
-			res.end(); // debugging
+			res.end(result); // debugging
 		});
-	});
 });
 // endpoint: /signup for POST submissions
 staticRouter.addRoute('/signup', function(req, res, m) {

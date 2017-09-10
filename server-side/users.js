@@ -32,15 +32,20 @@ const Users = function(db) {
 	};
 
 	const authenticate = function(email,password,callback) {
-		db.get(that.dbPrefix+email).then(JSON.parse)
+		return db.get(that.dbPrefix+email).then(JSON.parse)
 		.then( function checkHash(data) {
 			const givenHash = md5(password + salt);
 			if( givenHash !== data.password ) {
 				var bad = new Error('Please try again.');
 				bad.type = 'BadPasswordError';
 				throw bad;
+			} else {
+				return data;
 			}
-		}).then(tokenFor).then(callback);
+		}).then(tokenFor).then(callback)
+		.catch( function couldNotAuth(err){
+			console.log(err);
+		});
 	};
 
 	const validateToken = function( givenToken ) {
