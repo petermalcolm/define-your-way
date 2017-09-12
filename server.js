@@ -84,7 +84,6 @@ staticRouter.addRoute('/signup', function signUp(req, res, m) {
 	parsePost(req)
 	.then( function createThem(body) {
 		var post = qs.parse(body);
-		console.log(post['email'] + ' about to be created!'); // debugging
         return users.create({	name : post['name'],
 								email : post['email'],
 								password : post['password'],
