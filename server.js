@@ -90,20 +90,16 @@ staticRouter.addRoute('/signup', function signUp(req, res, m) {
 								password : post['password'],
 								avatar : post['avatar']});
     })
-    .then( function authenticateThem(id){
-		console.log(post['email'] + ' created!'); // debugging
-		return users.authenticate(post['email'],post['password']);
-	})
-	.then( function redirectThemAfterSignIn(userToken){
-		console.log('Here is the user\'s token:',userToken); // debugging
-		redirect(res,'/',{'Set-Cookie':'define-jwt='+userToken});
-    })
-    .catch(function signUpFailed(err) {
+	.catch(function signUpFailed(err) {
 		if(err) {
-			result = 'An account already exists for ' + post['email'];
+			result = 'An account already exists for that email.';
 		}
 		console.log(err);
 		res.end(result); // debugging
+    })
+    .then( function redirectThemAfterSignIn(userToken){
+		console.log('Here is the user\'s token:',userToken); // debugging
+		redirect(res,'/',{'Set-Cookie':'define-jwt='+userToken});
     });
 });
 // root level: /
