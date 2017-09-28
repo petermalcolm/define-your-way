@@ -167,7 +167,7 @@ const readReqCookie = function(req, name) {
 const joinGame = function( gameName, userToken ) {
 	return Promise.resolve(users.validateToken( userToken )).then(
 	function tokenWorked( token ){
-		return games.join( gameName, token );
+		return games.joinIn( gameName, token );
 	}).catch(function somethingFailed( err ){
 		console.log( err.message );
 		return err;

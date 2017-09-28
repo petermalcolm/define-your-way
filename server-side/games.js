@@ -19,7 +19,7 @@ const Games = function(db) {
 
 	// join a game
 	// return a Promise
-	const join = function(gameName,userInfo) {
+	const joinIn = function(gameName,userInfo) {
 		console.log('Joining',gameName,'...');
 		db.get(that.dbPrefix+gameName).then(JSON.parse).then(
 		function gameExists( dataParsed ) {
@@ -41,7 +41,7 @@ const Games = function(db) {
 	// interface
 	var _handle = {
 		create,
-		join,
+		joinIn,
 	}
 	return _handle;
 
