@@ -33,7 +33,7 @@ staticRouter.addRoute('/game/:name/*', function(req, res, m) {
 	if( !m.splats.length || JSON.stringify(m.splats) === JSON.stringify(['']) ) {
 		joinGame( m.params.name, readReqCookie(req,'define-jwt') )
 		.then( function youreIn( token ) {
-			console.log( 'User made it into the game.' );
+			console.log( 'User made it into the game with token',token );
 			req.url = "/game.html";
 			st(req,res);
 		},
