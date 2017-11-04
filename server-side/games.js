@@ -21,7 +21,7 @@ const Games = function(db) {
 	// return a Promise
 	const joinIn = function(gameName,userInfo) {
 		console.log('Joining',gameName,'...');
-		db.get(that.dbPrefix+gameName).then(JSON.parse).then(
+		return db.get(that.dbPrefix+gameName).then(JSON.parse).then(
 		function gameExists( dataParsed ) {
 			if( dataParsed.turns.length > 0 ) { // game is underway
 				if( -1 === dataParsed.players.indexOf(userInfo.email) ) {

@@ -32,13 +32,19 @@ const games = new gamelib(db);
 staticRouter.addRoute('/game/:name/*', function(req, res, m) {
 	if( !m.splats.length || JSON.stringify(m.splats) === JSON.stringify(['']) ) {
 		joinGame( m.params.name, readReqCookie(req,'define-jwt') )
-		.then( function youreIn( token ) {
-			console.log( 'User made it into the game with token',token );
-			req.url = "/game.html";
-			st(req,res);
-		},
-		function youreOut( error ) {
-			res.end('You are signed out of Define Your Way.');
+		.then( function youreIn( result ) {
+			if( !(result instanceof Error) ) {
+				console.log( 'User made it into the game with token',result );
+				req.url = "/game.html";
+				st(req,res);
+			} else {
+				console.log( 'User made a mistake',result );
+				res.end('Sorry. That game does not exist');
+			}
+		})
+		.catch(function(err){
+			console.log( 'No, really. The user made a mistake',err );
+			res.end('Sorry. That game really does not exist');		
 		});
 	} else {
 		req.url = "/assets/" + m.splats[0];
@@ -165,13 +171,7 @@ const readReqCookie = function(req, name) {
 // join a game
 // return a Promise
 const joinGame = function( gameName, userToken ) {
-	return Promise.resolve(users.validateToken( userToken )).then(
-	function tokenWorked( token ){
-		return games.joinIn( gameName, token );
-	}).catch(function somethingFailed( err ){
-		console.log( err.message );
-		return err;
-	});
+	return games.joinIn( gameName, userToken );
 }
 
 //// API on 5411 ////
