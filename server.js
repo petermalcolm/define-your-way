@@ -38,18 +38,32 @@ staticRouter.addRoute('/game/:name/*', function(req, res, m) {
 				req.url = "/game.html";
 				st(req,res);
 			} else {
-				console.log( 'User made a mistake',result );
+				console.log( 'User entered non-existent game:',result );
 				res.end('Sorry. That game does not exist');
 			}
 		})
 		.catch(function(err){
-			console.log( 'No, really. The user made a mistake',err );
-			res.end('Sorry. That game really does not exist');		
+			console.log( 'User is not signed in.',err );
+			redirect(res,'/',{});
 		});
 	} else {
 		req.url = "/assets/" + m.splats[0];
 		st(req,res);
 	}
+});
+// endpoint: /create/game/:name
+staticRouter.addRoute('/create/game/:name', function(req, res, m) {
+	createGame( m.params.name, readReqCookie(req,'define-jwt') )
+	.then( (result) => {
+		if( !(result instanceof Error) ) {
+			console.log( 'User created game',m.params.name,'with userToken',result );
+			req.url = "/game.html";
+			st(req,res);
+		} else {
+			console.log( 'Something went wrong creating game',m.params.name );
+			res.end('Sorry. Something went wrong creating game',m.params.name );
+		}
+	});
 });
 // endpoint: /login for POST submissions
 staticRouter.addRoute('/login', function logIn(req, res, m) {
@@ -171,6 +185,7 @@ const readReqCookie = function(req, name) {
 // join a game
 // return a Promise
 const joinGame = function( gameName, userToken ) {
+	if( null === userToken ) { return Promise.reject( userToken ); }
 	return games.joinIn( gameName, userToken );
 }
 

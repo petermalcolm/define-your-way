@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "bsfy": "browserify public/assets/js/view/UI.js > public/assets/js/main.js",
-    "wchy": "watchify public/assets/js/view/UI.js -o public/assets/js/main.js"
+    "wchy": "watchify public/assets/js/view/UI.js -o public/assets/js/main.js",
+    "wchy-i": "watchify public/assets/js/view/UI-Intro.js -o public/assets/js/intro.js"
   },
   "repository": {
     "type": "git",
