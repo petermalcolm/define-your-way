@@ -189,6 +189,13 @@ const joinGame = function( gameName, userToken ) {
 	return games.joinIn( gameName, userToken );
 }
 
+// create a game
+// return a Promise
+const createGame = function( gameName, userToken ) {
+	if( null === userToken ) { return Promise.reject( userToken ); }
+	return games.create( gameName, users.extractEmailFromToken(userToken) );
+}
+
 //// API on 5411 ////
 // define endpoint: /word
 apiRouter.addRoute('/word', function (req, res, m) {

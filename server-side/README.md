@@ -22,15 +22,11 @@ Here is the underlying data JSON data structure for a Define Your Way game:
 			"fromDictionary": false
 		}],
 		"votes": [{
-			"owner": "player0@example.com",
-			"creative": "player1@example.com",
-			"accurate": "player2@example.com"
-		}, {
-			"owner": "player1@example.com",
+			"voter": "player1@example.com",
 			"creative": "player2@example.com",
 			"accurate": "player0@example.com"
 		}, {
-			"owner": "player2@example.com",
+			"voter": "player2@example.com",
 			"creative": "player0@example.com",
 			"accurate": "player1@example.com"
 		}]

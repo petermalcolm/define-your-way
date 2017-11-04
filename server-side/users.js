@@ -59,8 +59,18 @@ const Users = function(db) {
 			try {
 				resolve(jwt.verify(givenToken, salt));
 			} catch(err) {
-				reject(Error('Bad token.'));
+				reject(Error('Bad token, cannot validtate:',givenToken));
 			}			
+		});
+	}
+
+	const extractEmailFromToken = ( token ) => {
+		return new Promise(function(resolve,reject) {
+			try {
+				resolve(jwt.decode(token).email);
+			} catch(){
+				reject(Error('Bad token, cannot extract email:',token));
+			}
 		});
 	}
 
@@ -81,7 +91,8 @@ const Users = function(db) {
 	var _handle = {
 		create,
 		authenticate,
-		validateToken
+		validateToken,
+		extractEmailFromToken
 	}
 	return _handle;
 

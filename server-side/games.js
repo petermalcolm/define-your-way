@@ -1,19 +1,23 @@
 const Games = function(db) {
 	const that = this;
 	this.dbPrefix = 'game-';
-	const create = function(gameInfo,callback) {
-		gameInfo.name = gameInfo.name.replace(/[^\w-]/g,''); // can never sanitize too much
-		db.get(that.dbPrefix+gameInfo.name,function(err,data) {
-			if( null !== err ) {
-				// TODO: actual data structure here
-				db.put(that.dbPrefix+gameInfo.name,JSON.stringify(gameInfo),function(err) {
-					return callback(err);
-				});	
-			} else {
-				var alreadyThere = new Error('Game already exists');
-				alreadyThere.type = 'GameExistsError';
-				return callback(alreadyThere);
-			}
+	// create a game
+	// return a Promise
+	const create = function(gameName,userEmail) {
+		gameName = gameName.replace(/[^\w-]/g,''); // can never sanitize too much
+		return db.get(that.dbPrefix+gameName).then(
+		function alreadyExists (err,data) {
+			var alreadyThereErr = new Error('Game already exists');
+			alreadyThereErr.type = 'GameExistsError';
+			return alreadyThereErr;
+		}).catch(
+		function creatIt( err ) {
+			console.log( 'Creating game',gameName,'- good news',err,'trying to find it in DB.');
+			db.put(that.dbPrefix+gameName,{
+				name: gameName,
+				players: [userEmail],
+				turns: []
+			});
 		});
 	};
 
@@ -27,12 +31,13 @@ const Games = function(db) {
 				if( -1 === dataParsed.players.indexOf(userInfo.email) ) {
 					var sadErr = new Error('Sorry. :-( This game is already underway without ' + userInfo.name);
 					sadErr.type = 'SadNewsError';
-					throw sadErr;					
+					return sadErr;					
 				}
 			}
 			// TODO: modify game so that this user becomes a player
 			return gameName;
-		}).catch(function gameJoinFail( err ){
+		}).catch(
+		function gameJoinFail( err ){
 			console.log( 'FAILED WITH:',err.message );
 			return err;
 		});
