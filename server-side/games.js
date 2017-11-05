@@ -6,18 +6,18 @@ const Games = function(db) {
 	const create = function(gameName,userEmail) {
 		gameName = gameName.replace(/[^\w-]/g,''); // can never sanitize too much
 		return db.get(that.dbPrefix+gameName).then(
-		function alreadyExists (err,data) {
+		function alreadyExists (data) {
 			var alreadyThereErr = new Error('Game already exists');
 			alreadyThereErr.type = 'GameExistsError';
 			return alreadyThereErr;
 		}).catch(
-		function creatIt( err ) {
+		function createIt( err ) {
 			console.log( 'Creating game',gameName,'- good news',err,'trying to find it in DB.');
-			db.put(that.dbPrefix+gameName,{
+			return db.put(that.dbPrefix+gameName,JSON.stringify({
 				name: gameName,
 				players: [userEmail],
 				turns: []
-			});
+			}));
 		});
 	};
 

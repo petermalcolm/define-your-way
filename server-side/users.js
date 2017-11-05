@@ -68,7 +68,7 @@ const Users = function(db) {
 		return new Promise(function(resolve,reject) {
 			try {
 				resolve(jwt.decode(token).email);
-			} catch(){
+			} catch(err){
 				reject(Error('Bad token, cannot extract email:',token));
 			}
 		});

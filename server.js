@@ -57,8 +57,7 @@ staticRouter.addRoute('/create/game/:name', function(req, res, m) {
 	.then( (result) => {
 		if( !(result instanceof Error) ) {
 			console.log( 'User created game',m.params.name,'with userToken',result );
-			req.url = "/game.html";
-			st(req,res);
+			redirect(res,'/game/'+m.params.name+'/',{});
 		} else {
 			console.log( 'Something went wrong creating game',m.params.name );
 			res.end('Sorry. Something went wrong creating game',m.params.name );

@@ -21152,7 +21152,7 @@ const WayIn = React.createClass({
 		};
 	},
 	render: function() {
-		// const { wayInKey, showMessage, goMessage } = this.props; 
+		const endpoint = this.props.wayInKey === 'new' ? '/create/game/' : '/game/';
 		return RcE('form',{ className: 'defyw-way-in', key: 'defyw-way-in' },
 			[
 				RcE('button',{ className:'defyw-way-in-'+this.props.wayInKey+'-show-btn',
@@ -21177,7 +21177,7 @@ const WayIn = React.createClass({
 				RcE('a',{  className:'defyw-way-in-'+this.props.wayInKey+'-go-link',
 						   key: 'defyw-way-in-'+this.props.wayInKey+'-go-link',
 						   id: 'defyw-way-in-'+this.props.wayInKey+'-go-link',
-						   href: '/game/' + this.state.gameSlug + '/',
+						   href: endpoint + this.state.gameSlug + '/',
 						   style: { display: (this.props.showing?'':'none') } 
 						}, 
 						this.props.goMessage )
