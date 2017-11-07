@@ -18,7 +18,7 @@ const DefineWord = React.createClass({
 		};
 	},
 	componentWillMount: function(){
-		this.wordSource();
+		// this.wordSource();
 	},
 	wordSource: function(props){
 		props = props || this.props;
