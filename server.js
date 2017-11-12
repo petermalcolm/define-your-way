@@ -19,6 +19,8 @@ const Router = require('routes');
 const staticRouter = Router();
 const apiRouter = Router();
 const qs = require('querystring');
+// and websockets for realtime communication between players
+const websocket = require('nodejs-websocket');
 // local includes
 const pick = require('./server-side/pick-word.js');
 const definition = require('./server-side/define-word.js');
@@ -194,6 +196,14 @@ const createGame = function( gameName, userToken ) {
 	if( null === userToken ) { return Promise.reject( userToken ); }
 	return games.create( gameName, users.extractEmailFromToken(userToken) );
 }
+
+//// WebSockets on 5123 for multiplayer ////
+
+websocket.createServer( function (conn) {
+	console.log('New Connection');
+}).listen(5123);
+
+
 
 //// API on 5411 ////
 // define endpoint: /word
