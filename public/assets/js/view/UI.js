@@ -2,6 +2,7 @@ const React = require('react');
 const ReactDOM = require('react-dom');
 const { createStore } = require('redux');
 const YourName = require('./YourName');
+const YourFriends = require('./YourFriends');
 const YourGame = require('./YourGame');
 const YourGrid = require('./YourGrid');
 const DefineWord = require('./DefineWord');
@@ -17,6 +18,7 @@ ReactDOM.render(
 		RcE('div', { id: 'defyw-intro'}, 'Introductory info here ... ' ),
 		RcE(YourName, {} ),
 		RcE(YourGame, {} ),
+		RcE(YourFriends, {} ),
 		RcE(YourGrid, {} ),
 		RcE(DefineWord, {} ) 
 	),

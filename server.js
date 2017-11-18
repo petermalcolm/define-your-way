@@ -199,10 +199,26 @@ const createGame = function( gameName, userToken ) {
 
 //// WebSockets on 5123 for multiplayer ////
 
-websocket.createServer( function (conn) {
+const wsockserv = websocket.createServer( function (conn) {
 	console.log('New Connection');
+	conn.nickname = null
+	conn.on("text", function (str) {
+		if (conn.nickname === null) {
+			conn.nickname = str
+			broadcast(str+" entered")
+		} else
+			broadcast("["+conn.nickname+"] "+str)
+	})
+	conn.on("close", function () {
+		broadcast(conn.nickname+" left")
+	})
 }).listen(5123);
 
+function broadcast(str) {
+	wsockserv.connections.forEach(function (connection) {
+		connection.sendText(str)
+	})
+}
 
 
 //// API on 5411 ////
