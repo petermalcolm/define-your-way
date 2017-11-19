@@ -40,5 +40,8 @@
     "request": "^2.79.0",
     "request-promise": "^4.1.1",
     "routes": "^2.1.0"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2"
   }
 }
