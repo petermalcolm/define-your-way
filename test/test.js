@@ -1,5 +1,27 @@
-var assert = require('chai').assert;
-var should = require('chai').should();
+// Some Chai:
+const assert = require('chai').assert;
+const expect = require("chai").expect;
+const should = require('chai').should();
+
+// A DB for users, games and cached API responses
+const levelup = require('level');
+const dbNoPromise = levelup('./define-db');
+
+// Some node magic for making Promises:
+const {promisify} = require('util');
+const db = { get : promisify(dbNoPromise.get.bind(dbNoPromise)),
+			 put : promisify(dbNoPromise.put.bind(dbNoPromise)),
+			 del : promisify(dbNoPromise.del.bind(dbNoPromise)) };
+
+// Code to Test:
+const userlib = require('../server-side/users.js');
+const users = new userlib(db);
+const gamelib = require('../server-side/games.js');
+const games = new gamelib(db); 
+
+///////////////////
+//   THE TESTS   //
+///////////////////
 
 describe('Array', function() {
   describe('#indexOf()', function() {
