@@ -1,7 +1,11 @@
 // Some Chai:
-const assert = require('chai').assert;
-const expect = require("chai").expect;
-const should = require('chai').should();
+const chai = require("chai");
+const chaiAsPromised = require("chai-as-promised");
+chai.use(chaiAsPromised);
+// use all three available syntaxes:
+const expect = chai.expect;
+const assert = chai.assert;
+chai.should();
 
 // A DB for users, games and cached API responses
 const levelup = require('level');
