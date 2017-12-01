@@ -45,3 +45,6 @@ help/
 
 # The salt
 _salt.js
+
+# Test credentials
+_test-creds.js
