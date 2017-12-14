@@ -62,9 +62,9 @@ describe("Users Mechanisms", function() {
 		});
 	});
 
-	describe("Delete a User", function() {
-		it('should delete a user, given the email address', function() {
-			// TODO: real code here ...
+	describe("Remove a User", function() {
+		it('should remove a user, given the email address', function() {
+		expect( users.remove('johndoe@example.com') ).to.eventually.be.fulfilled;
 		});
 	});
 

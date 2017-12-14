@@ -37,6 +37,10 @@ const Users = function(db) {
 		});
 	};
 
+	const remove = function(userEmail) {
+		return db.del(that.dbPrefix+userEmail);
+	}
+
 	const authenticate = function(email,password) {
 		return db.get(that.dbPrefix+email).then(JSON.parse)
 		.then( function checkHash(data) {
@@ -90,6 +94,7 @@ const Users = function(db) {
 	// interface
 	var _handle = {
 		create,
+		remove,
 		authenticate,
 		validateToken,
 		extractEmailFromToken
