@@ -54,7 +54,7 @@ describe('Array', function() {
 describe("Users Mechanisms", function() {
 	describe("Try to Create a Duplicate User", function() {
 		it('should not insert a user to the db that already exists', function() {
-		expect( users.create({	name : 'John Doe',
+			expect( users.create({	name : 'John Doe',
 								email : 'johndoe@example.com',
 								password : testCreds,
 								avatar : 'http://example.com/avatar.png'
@@ -64,13 +64,13 @@ describe("Users Mechanisms", function() {
 
 	describe("Remove a User", function() {
 		it('should remove a user, given the email address', function() {
-		expect( users.remove('johndoe@example.com') ).to.eventually.be.fulfilled;
+			expect( users.remove('johndoe@example.com') ).to.eventually.be.fulfilled;
 		});
 	});
 
 	describe("Create a Brand New User", function() {
 		it('should insert a user to the db that does not exist yet', function() {
-		expect( users.create({	name : 'John Doe',
+			expect( users.create({	name : 'John Doe',
 								email : 'johndoe@example.com',
 								password : testCreds,
 								avatar : 'http://example.com/avatar.png'
