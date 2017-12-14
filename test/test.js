@@ -52,16 +52,29 @@ describe('Array', function() {
 });
 
 describe("Users Mechanisms", function() {
-	describe("Create a User", function() {
+	describe("Try to Create a Duplicate User", function() {
 		it('should not insert a user to the db that already exists', function() {
 		expect( users.create({	name : 'John Doe',
 								email : 'johndoe@example.com',
 								password : testCreds,
 								avatar : 'http://example.com/avatar.png'
-							}) ).to.eventually.be.a('string');
+							}) ).to.eventually.be.an('error');
 		});
-		it('should insert a user to the db that does not exist yet', function() {
+	});
+
+	describe("Delete a User", function() {
+		it('should delete a user, given the email address', function() {
 			// TODO: real code here ...
+		});
+	});
+
+	describe("Create a Brand New User", function() {
+		it('should insert a user to the db that does not exist yet', function() {
+		expect( users.create({	name : 'John Doe',
+								email : 'johndoe@example.com',
+								password : testCreds,
+								avatar : 'http://example.com/avatar.png'
+							}) ).to.eventually.be.a('string');
 		});
 	});
 

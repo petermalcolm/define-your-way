@@ -32,7 +32,7 @@ const Users = function(db) {
 		}).then(function createdAndHereYouGo(putResult){
 			return tokenFor(userInfo);
 		}).catch(function creationSnafu(err){
-			console.log('User creation failed with',err);
+			// console.log('User creation failed with',err);
 			return err;
 		});
 	};
