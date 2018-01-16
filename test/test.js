@@ -71,6 +71,10 @@ describe("Users Mechanisms", function() {
 	});
 
 	describe("Authenticate a User", function() {
-			// TODO: real code here ...
+		it('should take valid credentials and return a jwt', function() {
+			expect( users.authenticate(
+					'johndoe@example.com', testCreds
+				) ).to.eventually.be.a('string');
+		});
 	});
 });
