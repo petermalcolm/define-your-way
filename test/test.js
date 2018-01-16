@@ -43,14 +43,6 @@ try {
 //   THE TESTS   //
 ///////////////////
 
-describe('Array', function() {
-  describe('#indexOf()', function() {
-    it('should return -1 when the value is not present', function() {
-      [1,2,3].indexOf(4).should.equal(-1);
-    });
-  });
-});
-
 describe("Users Mechanisms", function() {
 	describe("Try to Create a Duplicate User", function() {
 		it('should not insert a user to the db that already exists', function() {
