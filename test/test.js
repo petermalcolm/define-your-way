@@ -98,4 +98,17 @@ describe("Games Mechanisms", function() {
 		});
 	});
 
+	describe("Join a Game", function() {
+		it('should enter a user into a game, if the game is available', function() {
+			// code here
+		});
+	});
+
+	describe("Deny Entry into a Game-in-Progress", function() {
+		it('should not enter a user into a game, if the game is unavailable', function() {
+			// code here
+		});
+	});
+
+
 });
