@@ -78,3 +78,24 @@ describe("Users Mechanisms", function() {
 		});
 	});
 });
+
+describe("Games Mechanisms", function() {
+	describe("Try to Create a Duplicate Game", function() {
+		it('should not insert a game to the db that already exists', function() {
+			// code here
+		});
+	});
+
+	describe("Remove a Game", function() {
+		it('should remove a game, given the name', function() {
+			// code here
+		});
+	});
+
+	describe("Create a Game", function() {
+		it('should insert a game into the db that does not exist yet', function() {
+			// code here
+		});
+	});
+
+});
