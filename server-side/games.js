@@ -43,6 +43,10 @@ const Games = function(db) {
 		});
 	};
 
+	const delete = function(gameName) {
+		// TODO
+	}
+
 	// interface
 	var _handle = {
 		create,

@@ -82,31 +82,51 @@ describe("Users Mechanisms", function() {
 describe("Games Mechanisms", function() {
 	describe("Try to Create a Duplicate Game", function() {
 		it('should not insert a game to the db that already exists', function() {
-			// code here
+			expect( games.create(
+					'test'
+				) ).to.eventually.be.a('error');
 		});
 	});
 
 	describe("Remove a Game", function() {
 		it('should remove a game, given the name', function() {
-			// code here
+			expect( games.delete(
+					'test'
+				) ).to.eventually.be.fulfilled;
 		});
 	});
 
 	describe("Create a Game", function() {
 		it('should insert a game into the db that does not exist yet', function() {
-			// code here
+			expect( games.create(
+					'test'
+				) ).to.eventually.be.fulfilled;
 		});
 	});
 
 	describe("Join a Game", function() {
 		it('should enter a user into a game, if the game is available', function() {
-			// code here
+			expect (game.joinIn(
+					'test',
+					{	name : 'John Doe',
+								email : 'johndoe@example.com',
+								password : testCreds,
+								avatar : 'http://example.com/avatar.png'
+							}
+				) ).to.eventually.be.fulfilled;
 		});
 	});
 
 	describe("Deny Entry into a Game-in-Progress", function() {
 		it('should not enter a user into a game, if the game is unavailable', function() {
-			// code here
+			expect (game.joinIn(
+					'test-started',
+					{	name : 'John Doe',
+								email : 'johndoe@example.com',
+								password : testCreds,
+								avatar : 'http://example.com/avatar.png'
+							}
+				) ).to.eventually.be.fulfilled;
 		});
 	});
 
