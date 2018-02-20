@@ -90,7 +90,7 @@ describe("Games Mechanisms", function() {
 
 	describe("Remove a Game", function() {
 		it('should remove a game, given the name', function() {
-			expect( games.delete(
+			expect( games.deleteGame(
 					'test'
 				) ).to.eventually.be.fulfilled;
 		});

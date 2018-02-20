@@ -43,7 +43,7 @@ const Games = function(db) {
 		});
 	};
 
-	const delete = function(gameName) {
+	const deleteGame = function(gameName) {
 		// TODO
 	}
 
